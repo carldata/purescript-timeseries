@@ -1,0 +1,18 @@
+{
+  "name": "purescript-timeseries",
+  "homepage": "https://github.com/timeserieslab/purescript-timeseries",
+  "description": "time Series",
+  "license": "Apache 2",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "output"
+  ],
+  "dependencies": {
+    "purescript-prelude": "^3.0.0"
+  },
+  "devDependencies": {
+    "purescript-psci-support": "^3.0.0"
+  }
+}
