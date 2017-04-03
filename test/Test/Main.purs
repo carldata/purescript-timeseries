@@ -6,7 +6,7 @@ import Control.Monad.Eff.Console (CONSOLE)
 
 import Test.Assert (ASSERT)
 
-import Data.SeriesTest (testSeries)
+import Test.Data.Series (testSeries)
 
 
 main :: ∀ eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
