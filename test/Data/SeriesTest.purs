@@ -12,5 +12,5 @@ import Data.TimeSeries as TS
 testSeries :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
 testSeries = do
 
-    log "single data point should create series of length 1"
-    -- assert $ TS.series 1 == [1]
+    log "empty series has length 0"
+    assert $ TS.length TS.empty == 0
