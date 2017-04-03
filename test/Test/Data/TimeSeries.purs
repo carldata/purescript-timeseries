@@ -10,6 +10,12 @@ import Test.Assert (assert, ASSERT)
 testSeries :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
 testSeries = do
 
-    log "empty series has length 0"
+    log "Init test series"
     let emptySeries = TS.empty
+    let s1 = TS.fromValues [10.0, 1.2, 32.4, 0.65, 11.0]
+
+    log "empty series has length 0"
     assert $ TS.length emptySeries == 0
+
+    log "return series size" 
+    assert $ TS.length s1 == 5
