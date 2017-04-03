@@ -1,4 +1,4 @@
-# Welcome to Time Series library
+# Time Series library
 
 Library for processing Time Series which are functions from Time to real values.
 
