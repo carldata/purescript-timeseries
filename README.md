@@ -1,9 +1,24 @@
 # Time Series library
 
-Library for processing Time Series which are functions from Time to real values.
+[![Latest release](http://img.shields.io/github/release/carldata/purescript-timeseries.svg)](https://github.com/carldata/purescript-timeseries/releases)
+[![Build status](https://travis-ci.org/carldata/purescript-timeseries.svg?branch=master)](https://travis-ci.org/carldata/purescript-timeseries)
+
+Time Series processing
 
 
-# Features
+## Installation
+
+```
+bower install purescript-timeseries
+```
+
+## Documentation
+
+Module documentation is [published on Pursuit](http://pursuit.purescript.org/packages/purescript-timeseries).
+
+
+
+## Features
 
   * Basic functionality
     * [x] Slicing series
