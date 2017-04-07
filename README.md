@@ -3,7 +3,7 @@
 [![Latest release](http://img.shields.io/github/release/carldata/purescript-timeseries.svg)](https://github.com/carldata/purescript-timeseries/releases)
 [![Build status](https://travis-ci.org/carldata/purescript-timeseries.svg?branch=master)](https://travis-ci.org/carldata/purescript-timeseries)
 
-Time Series processing
+Analyze Time Series
 
 
 ## Installation
