@@ -1,6 +1,6 @@
 {
   "name": "purescript-timeseries",
-  "homepage": "https://github.com/timeserieslab/purescript-timeseries",
+  "homepage": "https://github.com/carldata/purescript-timeseries",
   "description": "time Series",
   "license": "Apache-2.0",
   "ignore": [
