@@ -1,6 +1,7 @@
 module Data.TimeSeries 
-    ( DataPoint(..)
+    ( DataPoint
     , Series
+    , dataPoint
     , empty
     , fromValues
     , length
@@ -29,20 +30,27 @@ data Series a = Series (Array (DataPoint a))
 dataPoint :: ∀ a. DateTime -> a -> DataPoint a
 dataPoint i v = { index: i, value: v }
 
+
 -- | Create an empty series
 empty :: ∀ a. Series a
 empty = Series []
+
 
 -- | Create series from DateTime and value.
 series :: ∀ a. Array (DataPoint a) -> Series a
 series xs = Series xs
 
+
 -- | Create series from values.
 -- | Index will be based on Instant starting from 0
 fromValues :: ∀ a. Array a -> Series a
-fromValues xs = Series $ A.zipWith dataPoint (mkIndex (A.length xs)) xs
+fromValues xs = Series $ A.zipWith dataPoint idx xs
+    where 
+        idx = mkIndex (A.length xs)
+    
 
--- Array of instants from time 0
+-- Create index starting from lowest date (bottom)
+-- In each step time is increased by 1 second
 mkIndex :: Int -> Array DateTime
 mkIndex n = map adjustedTime (A.range 1 n)
     where
