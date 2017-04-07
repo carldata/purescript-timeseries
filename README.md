@@ -6,7 +6,7 @@ Library for processing Time Series which are functions from Time to real values.
 # Features
 
   * Basic functionality
-    * [ ] Slicing series
+    * [x] Slicing series
     * [ ] Mapping over Series
     * [ ] Folding Series
     * [ ] Integration
