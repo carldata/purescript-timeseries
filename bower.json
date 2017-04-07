@@ -2,7 +2,7 @@
   "name": "purescript-timeseries",
   "homepage": "https://github.com/timeserieslab/purescript-timeseries",
   "description": "time Series",
-  "license": "Apache 2",
+  "license": "Apache-2.0",
   "ignore": [
     "**/.*",
     "node_modules",
