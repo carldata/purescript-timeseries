@@ -14,6 +14,9 @@ testSeries = do
     log "Init test series"
     let emptySeries = TS.empty
     let s1 = TS.fromValues [1.1, 2.6, 3.4, 4.6, 5.0]
+    let start2 = T.fromSeconds 2
+    let start20 = T.fromSeconds 20
+    let end4 = T.fromSeconds 4
 
     log "Empty series has length 0"
     assert $ TS.length emptySeries == 0
@@ -25,9 +28,10 @@ testSeries = do
     assert $ TS.values s1 == [1.1, 2.6, 3.4, 4.6, 5.0]
 
     log "Slicing"
-    let start = T.fromSeconds 2
-    let end = T.fromSeconds 4
-    assert $ TS.values (TS.slice start end s1) == [2.6, 3.4, 4.6]
+    assert $ TS.values (TS.slice start2 end4 s1) == [2.6, 3.4, 4.6]
+
+    log "Slicing - empty series if wrong indexes"
+    assert $ TS.values (TS.slice start20 end4 s1) == []
 
     -- it "return data point value at given index" $ do
     --     let pos = posixSecondsToUTCTime 2
