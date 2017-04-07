@@ -5,6 +5,8 @@ module Data.TimeSeries
     , fromValues
     , length
     , series
+    , slice
+    , values
     ) where
 
 import Prelude
@@ -51,3 +53,15 @@ mkIndex n = map adjustedTime (A.range 1 n)
 -- | Get series length.
 length :: ∀ a. Series a -> Int
 length (Series xs) = A.length xs
+
+
+-- | Get values
+values :: ∀ a. Series a -> Array a
+values (Series xs) = map (\x -> x.value) xs
+
+-- | Get subseries
+slice :: ∀ a. DateTime  -- ^ Start time (inclusive)
+      -> DateTime       -- ^ End time (inclusive)
+      -> Series a       -- ^ Input series
+      -> Series a       -- ^ Sliced Series
+slice start end (Series xs) = Series $ A.filter (\x -> x.index >= start && x.index <= end) xs
