@@ -8,15 +8,13 @@ module Data.TimeSeries
     , series
     , slice
     , values
+    , mkIndex
     ) where
 
 import Prelude
 import Data.Array as A
-import Data.DateTime (DateTime, adjust)
-import Data.Int (toNumber)
-import Data.Maybe (fromJust)
-import Data.Time.Duration (Seconds(Seconds))
-import Partial.Unsafe (unsafePartial)
+import Data.DateTime (DateTime)
+import Data.TimeSeries.Time as T
 
 
 -- | Data points is a time indexed value
@@ -52,10 +50,7 @@ fromValues xs = Series $ A.zipWith dataPoint idx xs
 -- Create index starting from lowest date (bottom)
 -- In each step time is increased by 1 second
 mkIndex :: Int -> Array DateTime
-mkIndex n = map adjustedTime (A.range 1 n)
-    where
-        adjustedTime :: Int -> DateTime
-        adjustedTime dt = unsafePartial $ fromJust $ adjust (Seconds (toNumber dt)) bottom
+mkIndex n = map T.fromSeconds (A.range 1 n)
 
 
 -- | Get series length.
