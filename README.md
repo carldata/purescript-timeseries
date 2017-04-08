@@ -7,7 +7,7 @@
   </img>
 </a>
 
-Analyze Time Series
+Library for Time Series analysis.
 
 
 ## Installation
@@ -15,12 +15,6 @@ Analyze Time Series
 ```
 bower install purescript-timeseries
 ```
-
-## Documentation
-
-Module documentation is [published on Pursuit](http://pursuit.purescript.org/packages/purescript-timeseries).
-
-
 
 ## Features
 
@@ -44,6 +38,11 @@ Module documentation is [published on Pursuit](http://pursuit.purescript.org/pac
     * [ ] Outliers
 
 
+## Documentation
+
+Module documentation is [published on Pursuit](http://pursuit.purescript.org/packages/purescript-timeseries).
+
+
 ## Build
 
 ```bash
@@ -64,7 +63,7 @@ Please report bugs via the
 
 # Redistributing
 
-timeseries source code is distributed under the Apache-2.0 license.
+purescript-timeseries source code is distributed under the Apache-2.0 license.
 
 **Contributions**
 
