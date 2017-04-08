@@ -1,4 +1,4 @@
-module Test.Data.Series (testSeries) where
+module Test.Data.TimeSeries (testSeries) where
 
 import Prelude
 import Data.TimeSeries as TS
