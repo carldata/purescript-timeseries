@@ -1,7 +1,11 @@
 # Time Series library
 
-[![Latest release](http://img.shields.io/github/release/carldata/purescript-timeseries.svg)](https://github.com/carldata/purescript-timeseries/releases)
 [![Build status](https://travis-ci.org/carldata/purescript-timeseries.svg?branch=master)](https://travis-ci.org/carldata/purescript-timeseries)
+<a href="https://pursuit.purescript.org/packages/purescript-timeseries">
+  <img src="https://pursuit.purescript.org/packages/purescript-timeseries/badge"
+       alt="purescript-timeseries on Pursuit">
+  </img>
+</a>
 
 Analyze Time Series
 
