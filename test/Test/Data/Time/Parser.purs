@@ -3,7 +3,7 @@ module Test.Data.TimeSeries.Time.Parser (testTimeParser) where
 import Prelude
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (log, CONSOLE)
-import Data.Date (canonicalDate, year)
+import Data.Date (canonicalDate)
 import Data.DateTime (date)
 import Data.Enum (toEnum)
 import Data.Maybe (fromMaybe)
