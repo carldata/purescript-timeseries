@@ -21,7 +21,8 @@
     "purescript-integers": "^2.0.0",
     "purescript-math": "^2.0.0",
     "purescript-maybe": "^2.0.0",
-    "purescript-parsing": "^3.2.0"
+    "purescript-parsing": "^3.2.0",
+    "purescript-tuples": "^3.2.0"
   },
   "devDependencies": {
     "purescript-assert": "^2.0.0",

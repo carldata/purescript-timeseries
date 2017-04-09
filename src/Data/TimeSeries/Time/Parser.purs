@@ -6,18 +6,15 @@ import Control.Alt ((<|>))
 import Data.Array (some)
 import Data.Char.Unicode (isDigit)
 import Data.Date (Date, canonicalDate)
-import Data.DateTime (DateTime(..), Time)
+import Data.DateTime (DateTime(..), Time(..))
 import Data.Either (Either(..))
 import Data.Enum (toEnum)
-import Data.Int (fromString, pow)
+import Data.Int (fromString)
 import Data.Maybe (fromMaybe)
-import Data.String (fromCharArray, length)
+import Data.String (fromCharArray)
 import Text.Parsing.Parser (ParseError, Parser, runParser)
 import Text.Parsing.Parser.String (char, satisfy)
 
-
--- Tuple definition
-data Tuple a b = Tuple a b
 
 
 -- | Parse ISO date. If date can't be parsed then this function will return the lowest date (bottom)
@@ -37,9 +34,8 @@ parseISOTimeOrError str = runParser str isoDateTime
 isoDateTime :: Parser String DateTime
 isoDateTime = do
     d  <- isoDate
-    -- time <- ((char ' ' <|> char 'T') *> isoTime) <|> pure midnight
-    let time' = bottom :: Time -- let time' = timeOfDayToTime time
-    pure (DateTime d time')
+    time <- ((char ' ' <|> char 'T') *> isoTime) <|> pure bottom
+    pure (DateTime d time)
 
 
 -- Parse Date part
@@ -51,11 +47,12 @@ isoDate = do
     pure $ fromMaybe bottom $ canonicalDate <$> toEnum year <*> toEnum month <*> toEnum day
 
 
--- isoTime :: Parser TimeOfDay
--- isoTime = do
---     hour   <- digits "hours"
---     _      <- char ':'
---     minute <- digits "minutes"
+isoTime :: Parser String Time
+isoTime = do
+    hour   <- int
+    _      <- char ':'
+    minute <- int
+    pure $ fromMaybe bottom $ Time <$> toEnum hour <*> toEnum minute <*> toEnum 0 <*> toEnum 0
 --     -- Allow omission of seconds.  If seconds is omitted, don't try to
 --     -- parse the sub-second part.
 --     Tuple sec subsec
@@ -75,9 +72,7 @@ isoDate = do
 -- Parser for Int type
 -- This parser will only parse positive numbers (without '-' sign)
 int :: Parser String Int
-int = do
-  xn <- some digit
-  pure $ readInt xn
+int = readInt <$> some digit
 
 
 -- decimal :: String -> Number
