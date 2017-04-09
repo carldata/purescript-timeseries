@@ -2,6 +2,7 @@
 module Data.TimeSeries.Time.Parser ( parseISODateTime ) where
 
 import Prelude
+import Control.Alt ((<|>))
 import Data.Array (some)
 import Data.Char.Unicode (isDigit)
 import Data.Date (Date, canonicalDate)
@@ -12,14 +13,14 @@ import Data.Int (fromString, pow)
 import Data.Maybe (fromMaybe)
 import Data.String (fromCharArray, length)
 import Text.Parsing.Parser (ParseError, Parser, runParser)
-import Text.Parsing.Parser.String (satisfy)
+import Text.Parsing.Parser.String (char, satisfy)
 
 
 -- Tuple definition
 data Tuple a b = Tuple a b
 
 
--- | Parse ISO date. If date can't be parsed then this function will return the lowest date
+-- | Parse ISO date. If date can't be parsed then this function will return the lowest date (bottom)
 parseISODateTime :: String -> DateTime
 parseISODateTime str =
     case parseISOTimeOrError str of
@@ -27,14 +28,12 @@ parseISODateTime str =
         Right dt -> dt
 
 
--- | Parse date and return error if date can't be parsed.
--- | If you need safe parser then there is a function: parseISODateTime
+-- Parse date and return error if date can't be parsed.
 parseISOTimeOrError :: String -> Either ParseError DateTime
 parseISOTimeOrError str = runParser str isoDateTime
 
 
--- Create UTCTime parser for ISO date time
--- This code is based on code from sqlite-simple package
+-- ISO DateTime parser
 isoDateTime :: Parser String DateTime
 isoDateTime = do
     d  <- isoDate
@@ -43,11 +42,12 @@ isoDateTime = do
     pure (DateTime d time')
 
 
+-- Parse Date part
 isoDate :: Parser String Date
 isoDate = do
     year <- int
-    month <- pure 1 -- month <- (char '-' *> digits "month") <|> pure 1
-    day   <- pure 1 -- day   <- (char '-' *> digits "day") <|> pure 1
+    month <- (char '-' *> int) <|> pure 1
+    day   <- (char '-' *> int) <|> pure 1
     pure $ fromMaybe bottom $ canonicalDate <$> toEnum year <*> toEnum month <*> toEnum day
 
 
@@ -72,7 +72,8 @@ isoDate = do
 --         (char '.' *> (decimal <$> A.takeWhile1 isDigit)) <|> pure 0
 
 
-
+-- Parser for Int type
+-- This parser will only parse positive numbers (without '-' sign)
 int :: Parser String Int
 int = do
   xn <- some digit
@@ -85,11 +86,11 @@ int = do
 --       n = pow 10 (length str)
 --   in d / n
 
--- | Match digit
+-- Single digit parser
 digit :: Parser String Char
 digit = satisfy isDigit
 
--- Helper function for reading Int value from String
+-- Helper function for reading Int value from Array of Chars
 -- If the value is wrong formatted then 0 is returned
 readInt :: Array Char -> Int 
 readInt str = fromMaybe 0 $ fromString $ fromCharArray str
