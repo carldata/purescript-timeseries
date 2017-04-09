@@ -30,5 +30,7 @@ testTimeParser = do
     assert $ date (parseISODateTime "2015-07-03") == d3
 
     log "Parse yyyy-mm-ddThh:mm"
-    log $ show $ parseISODateTime "2015-12-03T16:34"
     assert $ parseISODateTime "2015-07-03T16:34" == DateTime d3 t1
+
+    log "Parse yyyy-mm-ddThh:mm:ss"
+    assert $ parseISODateTime "2015-07-03T16:34:52" == DateTime d3 t2

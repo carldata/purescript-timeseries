@@ -33,7 +33,7 @@ parseISOTimeOrError str = runParser str isoDateTime
 -- ISO DateTime parser
 isoDateTime :: Parser String DateTime
 isoDateTime = do
-    d  <- isoDate
+    d    <- isoDate
     time <- ((char ' ' <|> char 'T') *> isoTime) <|> pure bottom
     pure (DateTime d time)
 
@@ -41,32 +41,20 @@ isoDateTime = do
 -- Parse Date part
 isoDate :: Parser String Date
 isoDate = do
-    year <- int
+    year  <- int
     month <- (char '-' *> int) <|> pure 1
     day   <- (char '-' *> int) <|> pure 1
     pure $ fromMaybe bottom $ canonicalDate <$> toEnum year <*> toEnum month <*> toEnum day
 
 
+-- Time if present requires at least hour and minutes. Seconds are optional
 isoTime :: Parser String Time
 isoTime = do
     hour   <- int
     _      <- char ':'
     minute <- int
-    pure $ fromMaybe bottom $ Time <$> toEnum hour <*> toEnum minute <*> toEnum 0 <*> toEnum 0
---     -- Allow omission of seconds.  If seconds is omitted, don't try to
---     -- parse the sub-second part.
---     Tuple sec subsec
---            <- (Tuple <$> (char ':' *> digits "seconds") <*> fract) <|> pure Tuple 0 0
-
---     let picos' = sec + subsec
-
---     case makeTimeOfDayValid hour minute picos' of
---       Nothing -> fail "invalid time of day"
---       Just x  -> return $! x
-
---     where
---       fract =
---         (char '.' *> (decimal <$> A.takeWhile1 isDigit)) <|> pure 0
+    sec    <- (char ':' *> int) <|> pure 0
+    pure $ fromMaybe bottom $ Time <$> toEnum hour <*> toEnum minute <*> toEnum sec <*> toEnum 0
 
 
 -- Parser for Int type
