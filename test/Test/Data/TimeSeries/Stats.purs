@@ -18,8 +18,8 @@ testStats = do
     log "mean"
     assert $ S.mean s1 == 2.0
 
-    -- log "variance"
-    -- assert $ S.variance s2 == 35.0/12.0
+    log "variance"
+    assert $ S.variance s2 == 35.0/12.0
 
-    -- log "standard deviation"
-    -- assert $ S.stddev s2 == sqrt (35.0/12.0)
+    log "standard deviation"
+    assert $ S.stddev s2 == sqrt (35.0/12.0)
