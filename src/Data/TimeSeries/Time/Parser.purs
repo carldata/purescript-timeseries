@@ -1,5 +1,5 @@
 -- | Helper function for DateTime operations
-module Data.TimeSeries.Time.Parser ( parseISODateTime ) where
+module Data.TimeSeries.Time.Parser ( parseISOTime, parseISOTimeOrError ) where
 
 import Prelude
 import Control.Alt ((<|>))
@@ -10,7 +10,7 @@ import Data.DateTime (DateTime(..), Time(..))
 import Data.Either (Either(..))
 import Data.Enum (toEnum)
 import Data.Int (fromString)
-import Data.Maybe (fromMaybe)
+import Data.Maybe (Maybe(..), fromMaybe)
 import Data.String (fromCharArray)
 import Text.Parsing.Parser (ParseError, Parser, runParser)
 import Text.Parsing.Parser.String (char, satisfy)
@@ -18,11 +18,11 @@ import Text.Parsing.Parser.String (char, satisfy)
 
 
 -- | Parse ISO date. If date can't be parsed then this function will return the lowest date (bottom)
-parseISODateTime :: String -> DateTime
-parseISODateTime str =
+parseISOTime :: String -> Maybe DateTime
+parseISOTime str =
     case parseISOTimeOrError str of
-        Left _ -> bottom
-        Right dt -> dt
+        Left _ -> Nothing
+        Right dt -> Just dt
 
 
 -- Parse date and return error if date can't be parsed.

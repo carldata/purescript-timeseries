@@ -4,6 +4,7 @@ module Data.TimeSeries
     , dataPoint
     , empty
     , fromValues
+    , index
     , length
     , series
     , slice
@@ -61,6 +62,12 @@ length (Series xs) = A.length xs
 -- | Get values
 values :: ∀ a. Series a -> Array a
 values (Series xs) = map (\x -> x.value) xs
+
+
+-- | Get Index
+index :: ∀ a. Series a -> Array DateTime
+index (Series xs) = map (\x -> x.index) xs
+
 
 -- | Get subseries
 slice :: ∀ a. DateTime  -- ^ Start time (inclusive)

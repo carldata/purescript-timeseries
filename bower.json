@@ -16,8 +16,10 @@
   "dependencies": {
     "purescript-prelude": "^3.0.0",
     "purescript-arrays": "^4.0.1",
+    "purescript-csv": "https://github.com/klangner/purescript-csv.git",
     "purescript-datetime": "^3.0.0",
     "purescript-integers": "^3.0.0",
+    "purescript-lists": "^4.0.1",
     "purescript-math": "^2.0.0",
     "purescript-maybe": "^3.0.0",
     "purescript-parsing": "^4.0.0",

@@ -5,11 +5,16 @@ import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (log, CONSOLE)
 import Data.Date (canonicalDate)
 import Data.DateTime (DateTime(..), Time(..), date)
+import Data.Either (isLeft)
 import Data.Enum (toEnum)
 import Data.Maybe (fromMaybe)
-import Data.TimeSeries.Time.Parser (parseISODateTime)
+import Data.TimeSeries.Time.Parser (parseISOTime, parseISOTimeOrError)
 import Test.Assert (assert, ASSERT)
 
+
+-- Safe parser for tests
+safeParse :: String -> DateTime
+safeParse str = fromMaybe bottom (parseISOTime str)
 
 testTimeParser :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
 testTimeParser = do
@@ -21,16 +26,19 @@ testTimeParser = do
     let t2 = fromMaybe bottom $ Time <$> toEnum 16 <*> toEnum 34 <*> toEnum 52 <*> toEnum 0
     
     log "Parse yyyy"
-    assert $ date (parseISODateTime "2015") == d1
+    assert $ date (safeParse "2015") == d1
 
     log "Parse yyyy-mm"
-    assert $ date (parseISODateTime "2015-07") == d2
+    assert $ date (safeParse "2015-07") == d2
 
     log "Parse yyyy-mm-dd"
-    assert $ date (parseISODateTime "2015-07-03") == d3
+    assert $ date (safeParse "2015-07-03") == d3
 
     log "Parse yyyy-mm-ddThh:mm"
-    assert $ parseISODateTime "2015-07-03T16:34" == DateTime d3 t1
+    assert $ safeParse "2015-07-03T16:34" == DateTime d3 t1
 
     log "Parse yyyy-mm-ddThh:mm:ss"
-    assert $ parseISODateTime "2015-07-03T16:34:52" == DateTime d3 t2
+    assert $ safeParse "2015-07-03T16:34:52" == DateTime d3 t2
+
+    log "Parse error"
+    assert $ isLeft (parseISOTimeOrError "aaaaa")
