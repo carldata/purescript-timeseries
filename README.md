@@ -27,7 +27,7 @@ bower install purescript-timeseries
     * [ ] Rolling window
     * [ ] Resampling and groupBy
   * Input/Output
-    * [ ] Reading and writing from CSV file
+    * [x] Reading data from CSV string
   * Calculate statistics
     * [ ] min, max
     * [ ] mean, variance and standard deviation
