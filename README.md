@@ -57,7 +57,7 @@ We are happy to receive bug reports, fixes, documentation enhancements,
 and other improvements.
 
 Please report bugs via the
-[github issue tracker](http://github.com/timeserieslab/timeseries/issues).
+[github issue tracker](http://github.com/carldata/purescript-timeseries/issues).
 
 
 

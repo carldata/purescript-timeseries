@@ -5,7 +5,7 @@
     "type": "git",
     "url": "https://github.com/carldata/purescript-timeseries"
   },
-  "description": "time Series",
+  "description": "Time Series",
   "license": "Apache-2.0",
   "ignore": [
     "**/.*",
