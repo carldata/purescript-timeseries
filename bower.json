@@ -3,7 +3,7 @@
   "homepage": "https://github.com/carldata/purescript-timeseries",
   "repository": {
     "type": "git",
-    "url": "https://github.com/carldata/purescript-timeseries"
+    "url": "https://github.com/carldata/purescript-timeseries.git"
   },
   "description": "Time Series",
   "license": "Apache-2.0",

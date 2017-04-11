@@ -1,6 +1,10 @@
 -- | Anomaly detection in Time Series
 -- | Current implementation looks for outliers
-module Data.TimeSeries.Anomaly (learn, predict) where
+module Data.TimeSeries.Anomaly 
+  ( Model
+  , learn
+  , predict
+  ) where
 
 
 import Data.TimeSeries as TS
