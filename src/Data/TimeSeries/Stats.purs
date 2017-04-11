@@ -14,14 +14,14 @@ import Math (pow, sqrt)
 
 -- Calculate mean
 mean :: TS.Series Number -> Number
-mean xs = sum (TS.values xs) / toNumber (TS.length xs)
+mean xs = sum xs.values / toNumber (TS.length xs)
 
 
 -- Calculate variance
 variance :: TS.Series Number -> Number
-variance xs = sum (map (\v -> pow (v-mu) 2.0) vs) / toNumber (TS.length xs)
-  where vs = TS.values xs
-        mu = mean xs
+variance xs = sum (map (\v -> pow (v-mu) 2.0) xs.values) / toNumber (TS.length xs)
+  where 
+    mu = mean xs
 
 
 -- Calculate standard deviation

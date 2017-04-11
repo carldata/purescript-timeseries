@@ -1,14 +1,14 @@
 module Data.TimeSeries.IO (fromCsv) where
   
-import Prelude  
+import Prelude
 import Data.TimeSeries as TS
 import Data.Either (Either(..))
 import Data.List (List, mapMaybe, (:), toUnfoldable)
 import Data.Maybe (Maybe(..))
-import Text.Parsing.CSV (defaultParsers)
-import Text.Parsing.Parser (runParser)
 import Data.TimeSeries.Time.Parser (parseISOTime)
 import Global (readFloat)
+import Text.Parsing.CSV (defaultParsers)
+import Text.Parsing.Parser (runParser)
 
 
 -- | Load TimeSeries from CSV at given URL
@@ -17,7 +17,7 @@ fromCsv str = case runParser str defaultParsers.file of
     Left _ -> TS.empty
     Right rows -> 
         let xs  = mapMaybe parseRow rows
-        in TS.series (toUnfoldable xs)
+        in TS.fromDataPoints (toUnfoldable xs)
 
 
 -- Parse single row

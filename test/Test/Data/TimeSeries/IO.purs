@@ -2,7 +2,6 @@ module Test.Data.TimeSeries.IO (testIO) where
 
 import Prelude
 import Data.TimeSeries.IO as IO
-import Data.TimeSeries as TS
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (log, CONSOLE)
 import Test.Assert (assert, ASSERT)
@@ -16,5 +15,5 @@ testIO = do
 
     log "Load from CSV"
     let s1 = IO.fromCsv csv
-    assert $ TS.values s1 == [123.45, 124.0, 125.0]
+    assert $ s1.values == [123.45, 124.0, 125.0]
 

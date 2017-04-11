@@ -25,13 +25,15 @@ testSeries = do
     assert $ TS.length s1 == 5
 
     log "Return values" 
-    assert $ TS.values s1 == [1.1, 2.6, 3.4, 4.6, 5.0]
+    assert $ s1.values == [1.1, 2.6, 3.4, 4.6, 5.0]
 
     log "Slicing"
-    assert $ TS.values (TS.slice start2 end4 s1) == [2.6, 3.4, 4.6]
+    let slicing1 = TS.slice start2 end4 s1
+    assert $ slicing1.values == [2.6, 3.4]
 
     log "Slicing - empty series if wrong indexes"
-    assert $ TS.values (TS.slice start20 end4 s1) == []
+    let slicing2 = TS.slice start20 end4 s1
+    assert $ slicing2.values == []
 
     -- it "return data point value at given index" $ do
     --     let pos = posixSecondsToUTCTime 2
