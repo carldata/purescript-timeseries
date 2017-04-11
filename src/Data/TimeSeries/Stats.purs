@@ -7,7 +7,6 @@ module Data.TimeSeries.Stats
 
 import Prelude
 import Data.Foldable (sum)
-import Data.Functor (map)
 import Data.Int (toNumber)
 import Data.TimeSeries as TS
 import Math (pow, sqrt)
