@@ -24,8 +24,7 @@ parseCsv str = A.mapMaybe (parseRow <<< fields) lines
 -- Parse single row
 parseRow :: Array String -> Maybe (TS.DataPoint Number)
 parseRow row = do
-    r1 <- A.index row 0
-    i <- parseISOTime r1
+    i <- A.index row 0 >>= parseISOTime
     v <- readFloat <$> (A.index row 1)
     pure $ TS.dataPoint i v
 
