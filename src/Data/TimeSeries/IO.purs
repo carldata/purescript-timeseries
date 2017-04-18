@@ -1,28 +1,32 @@
 module Data.TimeSeries.IO (fromCsv) where
   
 import Prelude
-import Data.TimeSeries as TS
-import Data.Either (Either(..))
-import Data.List (List, mapMaybe, (:), toUnfoldable)
-import Data.Maybe (Maybe(..))
+import Data.Array as A
+import Data.Maybe (Maybe)
+import Data.String as S
 import Data.TimeSeries.Time.Parser (parseISOTime)
 import Global (readFloat)
-import Text.Parsing.CSV (defaultParsers)
-import Text.Parsing.Parser (runParser)
+
+import Data.TimeSeries as TS
 
 
 -- | Load TimeSeries from CSV at given URL
 fromCsv :: String -> TS.Series Number
-fromCsv str = case runParser str defaultParsers.file of 
-    Left _ -> TS.empty
-    Right rows -> 
-        let xs  = mapMaybe parseRow rows
-        in TS.fromDataPoints (toUnfoldable xs)
+fromCsv  = TS.fromDataPoints <<< parseCsv
 
+-- | Load TimeSeries from CSV at given URL
+parseCsv :: String -> Array (TS.DataPoint Number)
+parseCsv str = A.mapMaybe (parseRow <<< fields) lines
+    where 
+        lines = S.split (S.Pattern "\n") str
+        fields = (S.split (S.Pattern ","))  
 
 -- Parse single row
-parseRow :: List String -> Maybe (TS.DataPoint Number)
-parseRow (x : y : _) = (\i -> TS.dataPoint i (readFloat y)) <$> parseISOTime x
-parseRow _ = Nothing
+parseRow :: Array String -> Maybe (TS.DataPoint Number)
+parseRow row = do
+    r1 <- A.index row 0
+    i <- parseISOTime r1
+    v <- readFloat <$> (A.index row 1)
+    pure $ TS.dataPoint i v
 
 

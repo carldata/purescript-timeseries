@@ -14,21 +14,22 @@
     "output"
   ],
   "dependencies": {
-    "purescript-prelude": "^3.0.0",
     "purescript-arrays": "^4.0.1",
-    "purescript-csv": "^2.0.0",
     "purescript-datetime": "^3.0.0",
     "purescript-foldable-traversable": "^3.0.0",
     "purescript-integers": "^3.0.0",
+    "purescript-learn": "^0.1.0",
     "purescript-lists": "^4.0.1",
     "purescript-math": "^2.0.0",
     "purescript-maybe": "^3.0.0",
     "purescript-parsing": "^4.0.0",
+    "purescript-prelude": "^3.0.0",
     "purescript-tuples": "^4.0.0"
   },
   "devDependencies": {
     "purescript-assert": "^3.0.0",
     "purescript-console": "^3.0.0",
+    "purescript-node-fs-aff": "^4.0.0",
     "purescript-psci-support": "^3.0.0"
   }
 }
