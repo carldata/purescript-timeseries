@@ -5,10 +5,9 @@ import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (log, CONSOLE)
 import Data.Date (canonicalDate)
 import Data.DateTime (DateTime(..), Time(..), date)
-import Data.Either (isLeft)
 import Data.Enum (toEnum)
 import Data.Maybe (fromMaybe)
-import Data.TimeSeries.Time.Parser (parseISOTime, parseISOTimeOrError)
+import Data.TimeSeries.Time.Parser (parseISOTime)
 import Test.Assert (assert, ASSERT)
 
 
@@ -40,5 +39,3 @@ testTimeParser = do
     log "Parse yyyy-mm-ddThh:mm:ss"
     assert $ safeParse "2015-07-03T16:34:52" == DateTime d3 t2
 
-    log "Parse error"
-    assert $ isLeft (parseISOTimeOrError "aaaaa")
