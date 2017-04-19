@@ -16,6 +16,7 @@ testSeries = do
     log "Init test series"
     let emptySeries = TS.empty
     let s1 = TS.fromValues [1.1, 2.6, 3.4, 4.6, 5.0]
+    let s2 = TS.fromValues [4.1, 2.6, 3.4, 4.6, 1.5]
     let start2 = T.fromSeconds 2
     let start20 = T.fromSeconds 20
     let end4 = T.fromSeconds 4
@@ -36,4 +37,8 @@ testSeries = do
     log "Slicing - empty series if wrong indexes"
     let slicing2 = TS.slice start20 end4 s1
     assert $ slicing2.values == []
+
+    log "Filtering"
+    let filtered1 = TS.filter (_ < 3.0) s2
+    assert $ filtered1.values == [2.6, 1.5]
 

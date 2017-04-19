@@ -20,8 +20,9 @@ bower install purescript-timeseries
 
   * Basic functionality
     * [x] Slicing series
-    * [ ] Mapping over Series
-    * [ ] Folding Series
+    * [x] Filtering series
+    * [ ] Mapping over series
+    * [ ] Folding series
     * [ ] Integration
     * [ ] Differentiation
     * [ ] Rolling window

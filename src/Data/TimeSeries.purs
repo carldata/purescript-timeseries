@@ -8,7 +8,8 @@ module Data.TimeSeries
     , fromValues
     , series
     , mkIndex
-    -- Data access
+    -- Data operations
+    , filter
     , length
     , slice
     ) where
@@ -18,6 +19,7 @@ import Data.Array as A
 import Data.TimeSeries.Time as T
 import Data.DateTime (DateTime)
 import Data.Maybe (fromMaybe)
+import Data.Tuple (Tuple(..), snd)
 
 
 -- | Data points is a time indexed value
@@ -76,3 +78,15 @@ slice start end xs = series (A.slice i j xs.index) (A.slice i j xs.values)
         n = length xs
         i = fromMaybe n $ A.findIndex (\x -> x >= start) xs.index
         j = fromMaybe n $ A.findLastIndex (\x -> x <= end) xs.index
+
+
+-- | Filter a series, keeping the elements which satisfy a predicate function, creating a new series.
+filter :: ∀ a. (a -> Boolean) -> Series a -> Series a
+filter pred xs = series is vs
+    where 
+        -- zip
+        xs1 = A.zip xs.index xs.values
+        -- filter zipped
+        xs2 = A.filter (\t -> pred (snd t)) xs1
+        -- Unzip
+        Tuple is vs = A.unzip xs2
