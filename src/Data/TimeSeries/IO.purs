@@ -23,7 +23,11 @@ fromCsv :: String -> Array (TS.Series Number)
 fromCsv str = map (\c -> TS.series idx c) cs
     where
         lines = S.split (S.Pattern "\n") str
-        Tuple idx cs = parseLines lines
+        parsedLines = parseLines lines
+        -- The following lines could be written as 
+        -- Tuple idx cs
+        idx = fst parsedLines
+        cs = snd parsedLines
 
 
 parseLines :: Array String -> Tuple (Column DateTime) (Array (Column Number))
