@@ -19,7 +19,7 @@ import Data.TimeSeries.IO as IO
 benchmarks :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS | eff) Unit
 benchmarks = do
 
-    log "\n# Benchamrk tests"
+    log "\n# Benchmark tests"
     log "Load 60k Time Series from the file"
     csv <- readTextFile UTF8 "testdata/test60k.csv"
     let s1 = fromMaybe TS.empty $ A.head $ IO.fromCsv csv
