@@ -2,12 +2,15 @@ module Data.TimeSeries
     ( DataPoint
     , Series
     , dataPoint
+    -- * Constructors
     , empty
     , fromDataPoints
     , fromValues
+    , series
+    , mkIndex
+    -- Data access
     , length
     , slice
-    , mkIndex
     ) where
 
 import Prelude

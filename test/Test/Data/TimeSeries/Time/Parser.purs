@@ -18,6 +18,8 @@ safeParse str = fromMaybe bottom (parseISOTime str)
 testTimeParser :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
 testTimeParser = do
 
+    log "\n# Time parser tests"
+
     let d1 = fromMaybe bottom $ canonicalDate <$> toEnum 2015 <*> toEnum 1 <*> toEnum 1
     let d2 = fromMaybe bottom $ canonicalDate <$> toEnum 2015 <*> toEnum 7 <*> toEnum 1
     let d3 = fromMaybe bottom $ canonicalDate <$> toEnum 2015 <*> toEnum 7 <*> toEnum 3

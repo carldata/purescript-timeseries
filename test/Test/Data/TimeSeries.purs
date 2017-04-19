@@ -11,6 +11,8 @@ import Test.Assert (assert, ASSERT)
 testSeries :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
 testSeries = do
 
+    log "\n# time Series base tests"
+
     log "Init test series"
     let emptySeries = TS.empty
     let s1 = TS.fromValues [1.1, 2.6, 3.4, 4.6, 5.0]

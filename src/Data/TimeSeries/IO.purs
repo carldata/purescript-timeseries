@@ -2,30 +2,45 @@ module Data.TimeSeries.IO (fromCsv) where
   
 import Prelude
 import Data.Array as A
-import Data.Maybe (Maybe)
+import Data.DateTime (DateTime)
+import Data.Maybe (Maybe, fromMaybe)
 import Data.String as S
+import Data.Tuple (Tuple(..), fst, snd)
 import Data.TimeSeries.Time.Parser (parseISOTime)
 import Global (readFloat)
 
 import Data.TimeSeries as TS
 
 
--- | Load TimeSeries from CSV at given URL
-fromCsv :: String -> TS.Series Number
-fromCsv  = TS.fromDataPoints <<< parseCsv
+-- Improve readability of this module
+type Column = Array
 
--- | Load TimeSeries from CSV at given URL
-parseCsv :: String -> Array (TS.DataPoint Number)
-parseCsv str = A.mapMaybe (parseRow <<< fields) lines
-    where 
+
+-- | Load all columns from CSV. 
+-- | First column is treated as a index for all Time Series. 
+-- | So this function will return #column-1 Time Series
+fromCsv :: String -> Array (TS.Series Number)
+fromCsv str = map (\c -> TS.series idx c) cs
+    where
         lines = S.split (S.Pattern "\n") str
-        fields = (S.split (S.Pattern ","))  
-
--- Parse single row
-parseRow :: Array String -> Maybe (TS.DataPoint Number)
-parseRow row = do
-    i <- A.index row 0 >>= parseISOTime
-    v <- readFloat <$> (A.index row 1)
-    pure $ TS.dataPoint i v
+        Tuple idx cs = parseLines lines
 
 
+parseLines :: Array String -> Tuple (Column DateTime) (Array (Column Number))
+parseLines lines = Tuple (map fst rows) (toColumns (map snd rows))
+    where rows = A.mapMaybe parseRow lines
+
+-- Parse single line and return index with array of column values
+parseRow :: String -> Maybe (Tuple DateTime (Array Number))
+parseRow str = do
+    let fields = S.split (S.Pattern ",") str
+    idx <- A.head fields  >>= parseISOTime
+    vs <- (map readFloat) <$> A.tail fields
+    pure $ Tuple idx vs
+
+-- Convert Array with rows into Array with columns
+toColumns :: ∀ a. Array (Array a) -> Array (Array a)
+toColumns rows = map col (A.range 0 (len-1))
+    where 
+        len = fromMaybe 0 $ A.length <$> A.head rows
+        col i = A.mapMaybe (\row -> A.index row i) rows
