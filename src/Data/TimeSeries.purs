@@ -25,7 +25,7 @@ import Data.Tuple (Tuple(..), fst, snd)
 import Partial.Unsafe (unsafePartial)
 
 
--- | Data points is a time indexed value
+-- | Data point is a time indexed value
 type DataPoint a = { index :: DateTime, value :: a }
                  
 -- | Data structure for holding Series.
@@ -34,7 +34,7 @@ type Series a = { index :: Array DateTime
                 }
 
 
--- Create data point
+-- | Create data point
 dataPoint :: ∀ a. DateTime -> a -> DataPoint a
 dataPoint i v = { index: i, value: v }
 
@@ -65,8 +65,8 @@ fromValues :: ∀ a. Array a -> Series a
 fromValues xs = series (mkIndex (A.length xs)) xs
     
 
--- Create index starting from lowest date (bottom)
--- In each step time is increased by 1 second
+-- | Create index starting from lowest date (bottom)
+-- | In each step time is increased by 1 second
 mkIndex :: Int -> Array DateTime
 mkIndex n = map T.fromSeconds (A.range 1 n)
 
@@ -100,7 +100,7 @@ filter pred xs = series is vs
         Tuple is vs = A.unzip xs2
 
 
--- | Join 2 series using function
+-- | Join 2 series using given function
 -- | Series will be joinned on index. It means that both series need to have the same index entries
 -- | If only 1 series contains given index then this item will be dropped
 zipWith :: ∀ a b c. (a -> b -> c) -> Series a -> Series b -> Series c 

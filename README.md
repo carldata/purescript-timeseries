@@ -21,6 +21,7 @@ bower install purescript-timeseries
   * Basic functionality
     * [x] Slicing series
     * [x] Filtering series
+    * [x] Join 2 series
     * [ ] Mapping over series
     * [ ] Folding series
     * [ ] Integration
@@ -35,8 +36,6 @@ bower install purescript-timeseries
   * Advanced functionality
     * [ ] Finding sessions (periods of activity)
     * [ ] Finding patterns
-  * Anomaly detection
-    * [ ] Outliers
 
 
 ## Documentation

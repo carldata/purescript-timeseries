@@ -9,7 +9,7 @@ import Data.Maybe (fromMaybe)
 import Data.Time.Duration (Milliseconds(..))
 
 
--- Convert timestamp in seconds into the DateTime
+-- | Convert Timestamp in seconds into the DateTime
 fromSeconds :: Int -> DateTime
 fromSeconds n = toDateTime ts
   where 

@@ -12,12 +12,12 @@ import Data.TimeSeries as TS
 import Math (pow, sqrt)
 
 
--- Calculate mean
+-- Calculate mean of series values
 mean :: TS.Series Number -> Number
 mean xs = sum xs.values / toNumber (TS.length xs)
 
 
--- Calculate variance
+-- Calculate variance of series values
 variance :: TS.Series Number -> Number
 variance xs = sum (map (\v -> pow (v-mu) 2.0) xs.values) / toNumber (TS.length xs)
   where 

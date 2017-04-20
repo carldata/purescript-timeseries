@@ -21,7 +21,8 @@ type DateRec =
 foreign import parseIsoNative :: String -> DateRec
 
 
--- | Parse ISO date. If date can't be parsed then this function will return the lowest date (bottom)
+-- | Parse ISO date. Date can be provided in partial form.
+-- | E.g. All forms '2015', '2015-02-04', '2015;-5-12T12:45:67" are correct"
 parseISOTime :: String -> Maybe DateTime
 parseISOTime str = fromDateRec $ parseIsoNative str
 
