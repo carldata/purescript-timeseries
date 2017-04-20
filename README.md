@@ -30,9 +30,6 @@ bower install purescript-timeseries
     * [ ] Resampling and groupBy
   * Input/Output
     * [x] Reading data from CSV string
-  * Calculate statistics
-    * [ ] min, max
-    * [x] mean, variance and standard deviation
   * Advanced functionality
     * [ ] Finding sessions (periods of activity)
     * [ ] Finding patterns
