@@ -22,6 +22,9 @@ benchmarks = do
     log "\n# Benchmark tests"
     log "Load 60k Time Series from the file"
     csv <- readTextFile UTF8 "testdata/test60k.csv"
-    let s1 = fromMaybe TS.empty $ A.head $ IO.fromCsv csv
-    log $ show (A.length s1.values)
+    let xs = IO.fromCsv csv
+    let s1 = fromMaybe TS.empty $ A.index xs 0
+    let s2 = fromMaybe TS.empty $ A.index xs 1
+    -- let s3 = TS.zipWith (==) s1 s2
+    -- log $ show (A.length s3.values)
     assert $ (A.length s1.values) == 59042

@@ -7,3 +7,4 @@
 /.history
 /generated-docs
 .purs-repl
+.vscode

@@ -12,14 +12,17 @@ module Data.TimeSeries
     , filter
     , length
     , slice
+    , toDataPoints
+    , zipWith
     ) where
 
 import Prelude
 import Data.Array as A
 import Data.TimeSeries.Time as T
 import Data.DateTime (DateTime)
-import Data.Maybe (fromMaybe)
-import Data.Tuple (Tuple(..), snd)
+import Data.Maybe (fromMaybe, fromJust)
+import Data.Tuple (Tuple(..), fst, snd)
+import Partial.Unsafe (unsafePartial)
 
 
 -- | Data points is a time indexed value
@@ -49,6 +52,11 @@ empty = series [] []
 -- | Create series from DateTime and value.
 fromDataPoints :: ∀ a. Array (DataPoint a) -> Series a
 fromDataPoints xs = series (map _.index xs) (map _.value xs)
+
+
+-- | Conver to array of data points
+toDataPoints :: ∀ a. Series a -> Array (DataPoint a)
+toDataPoints xs = (\t -> dataPoint (fst t) (snd t)) <$> A.zip xs.index xs.values
 
 
 -- | Create series from values.
@@ -90,3 +98,24 @@ filter pred xs = series is vs
         xs2 = A.filter (\t -> pred (snd t)) xs1
         -- Unzip
         Tuple is vs = A.unzip xs2
+
+
+-- | Join 2 series using function
+-- | Series will be joinned on index. It means that both series need to have the same index entries
+-- | If only 1 series contains given index then this item will be dropped
+zipWith :: ∀ a b c. (a -> b -> c) -> Series a -> Series b -> Series c 
+zipWith f xs ys = fromDataPoints $ zipWith' f (toDataPoints xs) (toDataPoints ys)
+
+-- Helper function which works on data points
+zipWith' :: ∀ a b c. (a -> b -> c) -> Array (DataPoint a) -> Array (DataPoint b) -> Array (DataPoint c)
+zipWith' _ [] _ = []
+zipWith' _ _ [] = []
+zipWith' f xs ys = if x.index > y.index then zipWith' f xt ys
+                   else if x.index < y.index then zipWith' f xs yt
+                   else [dataPoint x.index (f x.value y.value)] <> zipWith' f xt yt
+    where
+        -- It is ok to use partial functions here since we already checked that arrays are not empty
+        x = unsafePartial fromJust $ A.head xs
+        xt = unsafePartial fromJust $ A.tail xs
+        y = unsafePartial fromJust $ A.head ys
+        yt = unsafePartial fromJust $ A.tail ys
