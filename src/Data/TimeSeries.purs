@@ -108,14 +108,13 @@ zipWith f xs ys = fromDataPoints $ zipWith' f (toDataPoints xs) (toDataPoints ys
 
 -- Helper function which works on data points
 zipWith' :: ∀ a b c. (a -> b -> c) -> Array (DataPoint a) -> Array (DataPoint b) -> Array (DataPoint c)
-zipWith' _ [] _ = []
-zipWith' _ _ [] = []
-zipWith' f xs ys = if x.index > y.index then zipWith' f xt ys
-                   else if x.index < y.index then zipWith' f xs yt
-                   else [dataPoint x.index (f x.value y.value)] <> zipWith' f xt yt
+zipWith' f xs ys = snd $ A.foldl g (Tuple ys []) xs 
     where
-        -- It is ok to use partial functions here since we already checked that arrays are not empty
-        x = unsafePartial fromJust $ A.head xs
-        xt = unsafePartial fromJust $ A.tail xs
-        y = unsafePartial fromJust $ A.head ys
-        yt = unsafePartial fromJust $ A.tail ys
+        g :: Tuple (Array (DataPoint b)) (Array (DataPoint c)) -> DataPoint a -> Tuple (Array (DataPoint b)) (Array (DataPoint c))
+        g tu x = if A.null ys' then tu 
+                 else if y'.index > x.index then Tuple ys' (snd tu)
+                 else Tuple yt' (A.snoc (snd tu) (dataPoint x.index (f x.value y'.value)))
+            where 
+                ys' = A.dropWhile (\y -> y.index < x.index) (fst tu)
+                y' = unsafePartial $ fromJust $ A.head ys'
+                yt' = unsafePartial $ fromJust $ A.tail ys'

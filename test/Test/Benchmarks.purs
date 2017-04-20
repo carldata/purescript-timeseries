@@ -25,6 +25,6 @@ benchmarks = do
     let xs = IO.fromCsv csv
     let s1 = fromMaybe TS.empty $ A.index xs 0
     let s2 = fromMaybe TS.empty $ A.index xs 1
-    -- let s3 = TS.zipWith (==) s1 s2
-    -- log $ show (A.length s3.values)
+    let s3 = TS.zipWith (==) s1 s2
+    log $ show (A.length s3.values)
     assert $ (A.length s1.values) == 59042
