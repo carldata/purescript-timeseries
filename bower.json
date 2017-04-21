@@ -19,7 +19,6 @@
     "purescript-datetime": "^3.0.0",
     "purescript-foldable-traversable": "^3.0.0",
     "purescript-integers": "^3.0.0",
-    "purescript-learn": "^0.1.0",
     "purescript-lists": "^4.0.1",
     "purescript-math": "^2.0.0",
     "purescript-maybe": "^3.0.0",
