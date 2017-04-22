@@ -18,29 +18,30 @@ module Data.TimeSeries
 
 import Prelude
 import Data.Array as A
-import Data.TimeSeries.Time as T
-import Data.DateTime (DateTime)
+import Data.Int (toNumber)
 import Data.Maybe (fromMaybe, fromJust)
 import Data.Tuple (Tuple(..), fst, snd)
 import Partial.Unsafe (unsafePartial)
 
+import Data.TimeSeries.Time(Timestamp)
+
 
 -- | Data point is a time indexed value
-type DataPoint a = { index :: DateTime, value :: a }
+type DataPoint a = { index :: Timestamp, value :: a }
                  
 -- | Data structure for holding Series.
-type Series a = { index :: Array DateTime  
+type Series a = { index :: Array Timestamp  
                 , values :: Array a 
                 }
 
 
 -- | Create data point
-dataPoint :: ∀ a. DateTime -> a -> DataPoint a
+dataPoint :: ∀ a. Timestamp -> a -> DataPoint a
 dataPoint i v = { index: i, value: v }
 
 
 --  | Create series from indexes and values
-series :: ∀ a. Array DateTime -> Array a -> Series a 
+series :: ∀ a. Array Timestamp -> Array a -> Series a 
 series is vs = {index: is, values: vs}
 
 
@@ -60,15 +61,15 @@ toDataPoints xs = (\t -> dataPoint (fst t) (snd t)) <$> A.zip xs.index xs.values
 
 
 -- | Create series from values.
--- | Index will be based on Instant starting from 0
+-- | Index will be based on Timestamp starting from 0
 fromValues :: ∀ a. Array a -> Series a
 fromValues xs = series (mkIndex (A.length xs)) xs
     
 
 -- | Create index starting from lowest date (bottom)
 -- | In each step time is increased by 1 second
-mkIndex :: Int -> Array DateTime
-mkIndex n = map T.fromSeconds (A.range 1 n)
+mkIndex :: Int -> Array Timestamp
+mkIndex n = map (\x -> 1000.0 * (toNumber x)) (A.range 0 (n-1))
 
 
 -- | Get series length.
@@ -77,10 +78,10 @@ length xs = A.length xs.index
 
 
 -- | Get subseries
-slice :: ∀ a. DateTime  -- ^ Start time (inclusive)
-      -> DateTime       -- ^ End time (inclusive)
-      -> Series a       -- ^ Input series
-      -> Series a       -- ^ Sliced Series
+slice :: ∀ a. Timestamp     -- ^ Start time (inclusive)
+      -> Timestamp          -- ^ End time (inclusive)
+      -> Series a           -- ^ Input series
+      -> Series a           -- ^ Sliced Series
 slice start end xs = series (A.slice i j xs.index) (A.slice i j xs.values)
     where 
         n = length xs

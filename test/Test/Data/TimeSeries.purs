@@ -32,7 +32,7 @@ testSeries = do
 
     log "Slicing"
     let slicing1 = TS.slice start2 end4 s1
-    assert $ slicing1.values == [2.6, 3.4]
+    assert $ slicing1.values == [3.4, 4.6]
 
     log "Slicing - empty series if wrong indexes"
     let slicing2 = TS.slice start20 end4 s1

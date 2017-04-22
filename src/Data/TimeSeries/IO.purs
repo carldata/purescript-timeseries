@@ -2,13 +2,13 @@ module Data.TimeSeries.IO (fromCsv) where
   
 import Prelude
 import Data.Array as A
-import Data.DateTime (DateTime)
 import Data.Maybe (Maybe, fromMaybe)
 import Data.String as S
 import Data.Tuple (Tuple(..), fst, snd)
-import Data.TimeSeries.Time.Parser (parseISOTime)
 import Global (readFloat)
 
+import Data.TimeSeries.Time.Parser (parseISOTime)
+import Data.TimeSeries.Time (Timestamp)
 import Data.TimeSeries as TS
 
 
@@ -30,12 +30,12 @@ fromCsv str = map (\c -> TS.series idx c) cs
         cs = snd parsedLines
 
 
-parseLines :: Array String -> Tuple (Column DateTime) (Array (Column Number))
+parseLines :: Array String -> Tuple (Column Timestamp) (Array (Column Number))
 parseLines lines = Tuple (map fst rows) (toColumns (map snd rows))
     where rows = A.mapMaybe parseRow lines
 
 -- Parse single line and return index with array of column values
-parseRow :: String -> Maybe (Tuple DateTime (Array Number))
+parseRow :: String -> Maybe (Tuple Timestamp (Array Number))
 parseRow str = do
     let fields = S.split (S.Pattern ",") str
     idx <- A.head fields  >>= parseISOTime
