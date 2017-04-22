@@ -7,16 +7,17 @@ import Node.FS (FS)
 import Control.Monad.Eff.Exception (EXCEPTION)
 
 import Test.Assert (ASSERT)
+import Test.Helpers(NOW)
 
 import Test.Data.TimeSeries (testSeries)
 import Test.Data.TimeSeries.IO (testIO)
 import Test.Data.TimeSeries.Time.Parser (testTimeParser)
-import Test.Benchmarks (benchmarks)
+import Test.PerfTests (perfTests)
 
 
-main :: ∀ eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS | eff) Unit
+main :: ∀ eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW | eff) Unit
 main = do
   testTimeParser
   testSeries
   testIO
-  benchmarks
+  perfTests

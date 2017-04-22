@@ -17,6 +17,7 @@
   "dependencies": {
     "purescript-arrays": "^4.0.1",
     "purescript-datetime": "^3.0.0",
+    "purescript-enums": "^3.0.0",
     "purescript-foldable-traversable": "^3.0.0",
     "purescript-integers": "^3.0.0",
     "purescript-lists": "^4.0.1",
