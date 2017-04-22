@@ -21,17 +21,21 @@ perfTests :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception ::
 perfTests = do
 
     log "\n# Performance tests"   
-    log "10k points"
-    test10k
-    -- 30k test is too slow. Time ~= 3286 ms
-    log "30k points"
-    test30k
-    log "60k points"
-    test60k
+    log "* 10K points"
+    test10K
+    log "* 30k points"
+    test30K
+    -- 60k test is too slow. Time ~= 3280 ms
+    log "* 60K points"
+    test60K
+    log "* 1M points"
+    test1M
+    log "* 10M points"
+    test1M
     
 
-test10k :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
-test10k = do
+test10K :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
+test10K = do
     csv <- readTextFile UTF8 "testdata/test10k.csv"
     let xs = IO.fromCsv csv
     let s1 = fromMaybe TS.empty $ A.index xs 0
@@ -43,8 +47,8 @@ test10k = do
     assert $ t1-t2 < 1e4
 
 -- While using DateTime as a index this function takes around 3280 ms to complete.
-test30k :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
-test30k = do
+test30K :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
+test30K = do
     csv <- readTextFile UTF8 "testdata/test30k.csv"
     let xs = IO.fromCsv csv
     let s1 = fromMaybe TS.empty $ A.index xs 0
@@ -56,8 +60,8 @@ test30k = do
     assert $ t1-t2 < 1e4
 
 
-test60k :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
-test60k = do
+test60K :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
+test60K = do
     csv <- readTextFile UTF8 "testdata/test60k.csv"
     let xs = IO.fromCsv csv
     let s1 = fromMaybe TS.empty $ A.index xs 0
@@ -65,5 +69,25 @@ test60k = do
     t1 <- now
     let s3 = A.filter ((==) false) $ A.zipWith (==) s1.values s2.values             
     t2 <- now
-    log $ "* (filter <<< zip) " <> show (t2-t1) <> " milliseconds."
+    log $ "(filter <<< zip) " <> show (t2-t1) <> " milliseconds."
+    assert $ t2-t1 < 1e3
+
+
+test1M :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
+test1M = do
+    let s1 = TS.fromValues $ A.replicate 1000000 2.72
+    t1 <- now
+    let s3 = map (_ * 3.0) s1.values
+    t2 <- now
+    log $ "map " <> show (t2-t1) <> " milliseconds."
+    assert $ t2-t1 < 1e3
+
+
+test10M :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
+test10M = do
+    let vs = A.replicate 10000000 3.14
+    t1 <- now
+    let s3 = map (_ * 3.0) vs
+    t2 <- now
+    log $ "map " <> show (t2-t1) <> " milliseconds."
     assert $ t2-t1 < 1e3
