@@ -20,26 +20,50 @@ import Data.TimeSeries.IO as IO
 perfTests :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
 perfTests = do
 
-    log "\n# Performance tests"
+    log "\n# Performance tests"   
+    log "10k points"
+    test10k
+    -- 30k test is too slow. Time ~= 3286 ms
+    log "30k points"
+    test30k
+    log "60k points"
+    test60k
     
-    log "Performance of 60k file"
-    csv60k <- readTextFile UTF8 "testdata/test60k.csv"
-    let xs1 = IO.fromCsv csv60k
-    let s1 = fromMaybe TS.empty $ A.index xs1 0
-    let s2 = fromMaybe TS.empty $ A.index xs1 1
+
+test10k :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
+test10k = do
+    csv <- readTextFile UTF8 "testdata/test10k.csv"
+    let xs = IO.fromCsv csv
+    let s1 = fromMaybe TS.empty $ A.index xs 0
+    let s2 = fromMaybe TS.empty $ A.index xs 1
+    t1 <- now
+    let s3 = TS.zipWith (+) s1 s2
+    t2 <- now
+    log $ "zipWith " <> show (TS.length s3) <> " points in " <> show (t2-t1) <> " milliseconds."
+    assert $ t1-t2 < 1e4
+
+-- While using DateTime as a index this function takes around 3280 ms to complete.
+test30k :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
+test30k = do
+    csv <- readTextFile UTF8 "testdata/test30k.csv"
+    let xs = IO.fromCsv csv
+    let s1 = fromMaybe TS.empty $ A.index xs 0
+    let s2 = fromMaybe TS.empty $ A.index xs 1
+    t1 <- now
+    let s3 = TS.zipWith (+) s1 s2
+    t2 <- now
+    log $ "zipWith " <> show (TS.length s3) <> " points in " <> show (t2-t1) <> " milliseconds."
+    assert $ t1-t2 < 1e4
+
+
+test60k :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
+test60k = do
+    csv <- readTextFile UTF8 "testdata/test60k.csv"
+    let xs = IO.fromCsv csv
+    let s1 = fromMaybe TS.empty $ A.index xs 0
+    let s2 = fromMaybe TS.empty $ A.index xs 1
     t1 <- now
     let s3 = A.filter ((==) false) $ A.zipWith (==) s1.values s2.values             
     t2 <- now
-    log $ "(filter <<< zip) 60k points in " <> show (t2-t1) <> " milliseconds."
-    assert $ (A.length s1.values) == 59042
-    
-    log "Performance of 10k file"
-    csv10k <- readTextFile UTF8 "testdata/test10k.csv"
-    let xs2 = IO.fromCsv csv10k
-    let s11 = fromMaybe TS.empty $ A.index xs2 0
-    let s12 = fromMaybe TS.empty $ A.index xs2 1
-    t11 <- now
-    let s13 = TS.zipWith (+) s11 s12
-    t12 <- now
-    log $ "zipWith " <> show (TS.length s13) <> " points in " <> show (t12-t11) <> " milliseconds."
-    assert $ (A.length s13.values) == 10000
+    log $ "* (filter <<< zip) " <> show (t2-t1) <> " milliseconds."
+    assert $ t2-t1 < 1e3

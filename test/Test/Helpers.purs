@@ -1,6 +1,5 @@
 module Test.Helpers ( NOW, now ) where
 
-import Prelude
 import Control.Monad.Eff (kind Effect, Eff)
 
 
