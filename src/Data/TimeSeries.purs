@@ -91,14 +91,14 @@ slice start end xs = series (A.slice i j xs.index) (A.slice i j xs.values)
 
 -- | Filter a series, keeping the elements which satisfy a predicate function, creating a new series.
 filter :: ∀ a. (a -> Boolean) -> Series a -> Series a
-filter pred xs = series is vs
+filter pred xs = series (fst tu) (snd tu)
     where 
         -- zip
         xs1 = A.zip xs.index xs.values
         -- filter zipped
         xs2 = A.filter (\t -> pred (snd t)) xs1
         -- Unzip
-        Tuple is vs = A.unzip xs2
+        tu = A.unzip xs2
 
 
 -- | Join 2 series using given function
