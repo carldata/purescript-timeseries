@@ -44,7 +44,7 @@ test10K = do
     let s3 = TS.zipWith (+) s1 s2
     t2 <- now
     log $ "zipWith " <> show (TS.length s3) <> " points in " <> show (t2-t1) <> " milliseconds."
-    assert $ t1-t2 < 1e4
+    assert $ t1-t2 < 5e3
 
 test30K :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
 test30K = do
@@ -69,7 +69,7 @@ test60K = do
     let s3 = A.filter ((==) false) $ A.zipWith (==) s1.values s2.values             
     t2 <- now
     log $ "(filter <<< zip <<< fromCsv) " <> show (t2-t1) <> " milliseconds."
-    assert $ t2-t1 < 1e3
+    assert $ t2-t1 < 2e3
 
 
 test1M :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
