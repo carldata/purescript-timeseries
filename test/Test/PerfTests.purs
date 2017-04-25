@@ -22,24 +22,18 @@ perfTests :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception ::
 perfTests = do
 
     log "\n# Performance tests"   
-    log "* 10K points"
-    test10K
-    -- zipWith takes around 3080 ms to complete. With DateTime index 200ms longer
-    -- log "* 30k points"
-    -- test30K
-    -- This function doesn't scale beyond 10K. thats probabli because of the recursion
-    -- log "* Test rolling window"
-    -- testRolling
-    log "* 60K points"
-    test60K
-    log "* 1M points"
+    zipWith10K
+    -- Skipped due to too long processing. ~3080ms. Doesn't scala lineary
+    -- zipWith30K
+    testRolling
+    testFilter
     test1M
-    log "* 10M points"
     test1M
     
 
-test10K :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
-test10K = do
+zipWith10K :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
+zipWith10K = do
+    log "* zipWith 10K points"
     csv <- readTextFile UTF8 "testdata/test10k.csv"
     let xs = IO.fromCsv csv
     let s1 = fromMaybe TS.empty $ A.index xs 0
@@ -47,11 +41,12 @@ test10K = do
     t1 <- now
     let s3 = TS.zipWith (+) s1 s2
     t2 <- now
-    log $ "zipWith " <> show (TS.length s3) <> " points in " <> show (t2-t1) <> " milliseconds."
+    log $ "Processed " <> show (TS.length s3) <> " points in " <> show (t2-t1) <> " milliseconds."
     assert $ t1-t2 < 5e3
 
-test30K :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
-test30K = do
+zipWith30K :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
+zipWith30K = do
+    log "* zipWith 30K points"
     csv <- readTextFile UTF8 "testdata/test30k.csv"
     let xs = IO.fromCsv csv
     let s1 = fromMaybe TS.empty $ A.index xs 0
@@ -59,24 +54,26 @@ test30K = do
     t1 <- now
     let s3 = TS.zipWith (+) s1 s2
     t2 <- now
-    log $ "zipWith " <> show (TS.length s3) <> " points in " <> show (t2-t1) <> " milliseconds."
+    log $ "Processed " <> show (TS.length s3) <> " points in " <> show (t2-t1) <> " milliseconds."
     assert $ t1-t2 < 1e4
 
 
 testRolling :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
 testRolling = do
+    log "* Test rolling window 30K, window size=3"
     t1 <- now
     csv <- readTextFile UTF8 "testdata/test30k.csv"
     let xs = IO.fromCsv csv
     let s1 = fromMaybe TS.empty $ A.index xs 0
     let s2 = TS.rollingWindow 3 sum s1
     t2 <- now
-    log $ "rollingWindow of size 3 on 10K points " <> show (t2-t1) <> " milliseconds."
-    assert $ t2-t1 < 2e5
+    log $ "Time: " <> show (t2-t1) <> " milliseconds."
+    assert $ t2-t1 < 2e4
 
 
-test60K :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
-test60K = do
+testFilter :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
+testFilter = do
+    log "* Filter, zip and fromCsv. 60K points"
     t1 <- now
     csv <- readTextFile UTF8 "testdata/test60k.csv"
     let xs = IO.fromCsv csv
@@ -84,11 +81,12 @@ test60K = do
     let s2 = fromMaybe TS.empty $ A.index xs 1
     let s3 = A.filter ((==) false) $ A.zipWith (==) s1.values s2.values             
     t2 <- now
-    log $ "(filter <<< zip <<< fromCsv) " <> show (t2-t1) <> " milliseconds."
+    log $ "Time " <> show (t2-t1) <> " milliseconds."
 
 
 test1M :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
 test1M = do
+    log "* 1M points"
     let s1 = TS.fromValues $ A.replicate 1000000 2.72
     t1 <- now
     let s3 = map (_ * 3.0) s1.values
@@ -99,6 +97,7 @@ test1M = do
 
 test10M :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
 test10M = do
+    log "* 10M points"
     let s1 = TS.fromValues $ A.replicate 10000000 3.14
     t1 <- now
     let s3 = map (_ * 3.0) s1.values

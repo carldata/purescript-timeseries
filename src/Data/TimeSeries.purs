@@ -21,6 +21,7 @@ import Prelude
 import Data.Array as A
 import Data.Boolean (otherwise)
 import Data.Int (toNumber)
+import Data.List (uncons)
 import Data.Maybe (fromMaybe, fromJust)
 import Data.TimeSeries.Time (Timestamp)
 import Data.Tuple (Tuple(..), fst, snd)
@@ -124,12 +125,15 @@ zipWith' f xs ys = snd $ A.foldl g (Tuple ys []) xs
 
 -- | Apply function to the rolling window and create new Series
 rollingWindow :: ∀ a b. Int -> (Array a -> b) -> Series a -> Series b 
-rollingWindow n f xs = series idx $ rolling' n f xs.values
+rollingWindow n agg xs = series idx $ rolling' (A.take n1 xs.values) agg (A.drop n1 xs.values)
     where 
-        idx = A.drop (n - 1) xs.index
+        n1 = n-1
+        idx = A.drop n1 xs.index
 
-rolling' :: ∀ a b. Int -> (Array a -> b) -> Array a -> Array b 
-rolling' n f xs 
-    | A.length xs < n = []
-    | otherwise = A.cons (f wnd) $ rolling' n f (A.drop 1 xs)
-        where wnd = A.take n xs
+rolling' :: ∀ a b. Array a -> (Array a -> b) -> Array a -> Array b 
+rolling' mu agg xs = (A.foldl f {wnd: mu, out: []} xs).out
+    where
+      f {wnd: ws, out: os} x = {wnd: wnd2, out: A.snoc os (agg wnd1)}
+        where 
+            wnd1 = A.snoc ws x
+            wnd2 = A.drop 1 wnd1

@@ -13,7 +13,7 @@ import Data.TimeSeries.Time as T
 testSeries :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
 testSeries = do
 
-    log "\n# time Series base tests"
+    log "\n# Time Series base tests"
     lengthTest
     testValues
     testSlicing
@@ -48,7 +48,7 @@ testSlicing = do
 
     let slicing1 = TS.slice start2 end4 s1
     assert $ slicing1.values == [3.4, 4.6]
-    log "Slicing - empty series if wrong indexes"
+    log "* Slicing - empty series if wrong indexes"
     let slicing2 = TS.slice start20 end4 s1
     assert $ slicing2.values == []
 
