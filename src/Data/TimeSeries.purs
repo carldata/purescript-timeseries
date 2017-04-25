@@ -19,12 +19,12 @@ module Data.TimeSeries
 
 import Prelude
 import Data.Array as A
+import Data.Boolean (otherwise)
 import Data.Int (toNumber)
 import Data.Maybe (fromMaybe, fromJust)
+import Data.TimeSeries.Time (Timestamp)
 import Data.Tuple (Tuple(..), fst, snd)
 import Partial.Unsafe (unsafePartial)
-
-import Data.TimeSeries.Time(Timestamp)
 
 
 -- | Data point is a time indexed value
@@ -124,4 +124,12 @@ zipWith' f xs ys = snd $ A.foldl g (Tuple ys []) xs
 
 -- | Apply function to the rolling window and create new Series
 rollingWindow :: ∀ a b. Int -> (Array a -> b) -> Series a -> Series b 
-rollingWindow n f xs = empty
+rollingWindow n f xs = series idx $ rolling' n f xs.values
+    where 
+        idx = A.drop (n - 1) xs.index
+
+rolling' :: ∀ a b. Int -> (Array a -> b) -> Array a -> Array b 
+rolling' n f xs 
+    | A.length xs < n = []
+    | otherwise = A.cons (f wnd) $ rolling' n f (A.drop 1 xs)
+        where wnd = A.take n xs

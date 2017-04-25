@@ -9,6 +9,7 @@ import Node.FS.Sync (readTextFile)
 import Node.FS (FS)
 import Node.Encoding (Encoding(..))
 import Control.Monad.Eff.Exception (EXCEPTION)
+import LinearAlgebra.Vector (sum)
 
 import Test.Assert (assert, ASSERT)
 import Test.Helpers(NOW, now)
@@ -26,6 +27,9 @@ perfTests = do
     -- zipWith takes around 3080 ms to complete. With DateTime index 200ms longer
     -- log "* 30k points"
     -- test30K
+    -- This function doesn't scale beyond 10K. thats probabli because of the recursion
+    -- log "* Test rolling window"
+    -- testRolling
     log "* 60K points"
     test60K
     log "* 1M points"
@@ -59,6 +63,18 @@ test30K = do
     assert $ t1-t2 < 1e4
 
 
+testRolling :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
+testRolling = do
+    t1 <- now
+    csv <- readTextFile UTF8 "testdata/test30k.csv"
+    let xs = IO.fromCsv csv
+    let s1 = fromMaybe TS.empty $ A.index xs 0
+    let s2 = TS.rollingWindow 3 sum s1
+    t2 <- now
+    log $ "rollingWindow of size 3 on 10K points " <> show (t2-t1) <> " milliseconds."
+    assert $ t2-t1 < 2e5
+
+
 test60K :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
 test60K = do
     t1 <- now
@@ -69,7 +85,6 @@ test60K = do
     let s3 = A.filter ((==) false) $ A.zipWith (==) s1.values s2.values             
     t2 <- now
     log $ "(filter <<< zip <<< fromCsv) " <> show (t2-t1) <> " milliseconds."
-    assert $ t2-t1 < 2e3
 
 
 test1M :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit

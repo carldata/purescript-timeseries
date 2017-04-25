@@ -1,11 +1,13 @@
 module Test.Data.TimeSeries (testSeries) where
 
 import Prelude
-import Data.TimeSeries as TS
-import Data.TimeSeries.Time as T
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (log, CONSOLE)
 import Test.Assert (assert, ASSERT)
+
+import LinearAlgebra.Vector (sum)
+import Data.TimeSeries as TS
+import Data.TimeSeries.Time as T
 
 
 testSeries :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
@@ -17,6 +19,7 @@ testSeries = do
     testSlicing
     testFilter
     testZipWith
+    testRolling
 
 
 lengthTest :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
@@ -67,5 +70,10 @@ testZipWith = do
     assert $ z1.values == [5.3, 5.2, 6.8, 9.2, 6.5]
 
 
--- let xs = TS.tsSeries [1..] [1.0, 2.0, 3.0, 4.0, 5.0]
--- TS.rolling (TS.seconds 2) sum xs `shouldBe` TS.tsSeries [2..] [3.0, 5.0, 7.0, 9.0]    
+testRolling :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
+testRolling = do
+    log "* Rolling window"
+    let xs = TS.fromValues [1.0, 2.0, 3.0, 4.0, 5.0]
+    let ys = TS.rollingWindow 3 sum xs
+    assert $ ys.index == [2000.0, 3000.0, 4000.0]
+    assert $ ys.values == [6.0, 9.0, 12.0]
