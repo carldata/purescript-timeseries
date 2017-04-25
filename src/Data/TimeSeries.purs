@@ -11,6 +11,7 @@ module Data.TimeSeries
     -- Data operations
     , filter
     , length
+    , rollingWindow
     , slice
     , toDataPoints
     , zipWith
@@ -119,3 +120,8 @@ zipWith' f xs ys = snd $ A.foldl g (Tuple ys []) xs
                 ys' = A.dropWhile (\y -> y.index < x.index) (fst tu)
                 y' = unsafePartial $ fromJust $ A.head ys'
                 yt' = unsafePartial $ fromJust $ A.tail ys'
+
+
+-- | Apply function to the rolling window and create new Series
+rollingWindow :: ∀ a b. Int -> (Array a -> b) -> Series a -> Series b 
+rollingWindow n f xs = empty

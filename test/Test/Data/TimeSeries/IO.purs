@@ -51,5 +51,4 @@ fromFileTest = do
   let idx1 = s1.index
   let idx2 = A.zip idx1 (fromMaybe [] (A.tail idx1))
   let idx3 = A.filter (\tu -> (fst tu) > (snd tu)) idx2
-  log $ show idx3
   assert $ A.length idx3 == 0
