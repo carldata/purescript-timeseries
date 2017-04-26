@@ -34,6 +34,12 @@ type DataPoint a = { index :: Timestamp, value :: a }
 -- | Data structure for holding Series.
 data Series a = Series (Array Timestamp) (Array a)
 
+instance showSeries :: Show a => Show (Series a) where 
+    show (Series idx vs) = "{ index: " <> show idx <> "\n, values: " <> show vs <> "\n}"
+
+instance eqSeries :: Eq a => Eq (Series a) where 
+    eq (Series idx1 vs1) (Series idx2 vs2) = (eq idx1 idx2) && (eq vs1 vs2)
+
 
 -- | Create data point
 dataPoint :: ∀ a. Timestamp -> a -> DataPoint a
