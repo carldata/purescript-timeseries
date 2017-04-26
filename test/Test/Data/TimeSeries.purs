@@ -22,6 +22,7 @@ testSeries = do
     testRolling
     testMap
     testDiff
+    testIntegrate
 
 
 lengthTest :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
@@ -93,7 +94,13 @@ testDiff :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
 testDiff = do
     log "* Differentiate"
     let xs = TS.fromValues [1.0, 2.0, 3.0, 4.0, 5.0]
-    let ys = TS.diff xs
-    assert $ ys == TS.series [1000.0, 2000.0, 3000.0, 4000.0] [1.0, 1.0, 1.0, 1.0]
+    assert $ TS.diff xs == TS.series [1000.0, 2000.0, 3000.0, 4000.0] [1.0, 1.0, 1.0, 1.0]
+
+
+testIntegrate :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
+testIntegrate = do
+    log "* Integrate"
+    let xs = TS.fromValues [1.0, 2.0, 3.0, 4.0, 5.0]
+    assert $ TS.integrate xs == TS.series [0.0, 1000.0, 2000.0, 3000.0, 4000.0] [1.0, 3.0, 6.0, 10.0, 15.0]
 
 

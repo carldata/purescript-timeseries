@@ -23,7 +23,7 @@ bower install purescript-timeseries
     * [x] Filtering series
     * [x] Join 2 series
     * [x] Mapping over series
-    * [ ] Integration
+    * [x] Integration
     * [x] Differentiation
     * [x] Rolling window
     * [ ] GroupBy

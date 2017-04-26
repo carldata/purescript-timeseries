@@ -11,6 +11,7 @@ module Data.TimeSeries
     -- Data operations
     , diff
     , index 
+    , integrate
     , filter
     , length
     , rollingWindow
@@ -155,8 +156,17 @@ rolling' mu agg xs = (A.foldl f {wnd: mu, out: []} xs).out
             wnd1 = A.snoc ws x
             wnd2 = A.drop 1 wnd1
 
+
 -- | Differentiate Series xt = xt - x(t-1)
 diff :: ∀ a. Field a => Series a -> Series a 
 diff (Series idx vs) = Series (A.drop 1 idx) vs2 
     where
-      vs2 = A.zipWith (-) (A.drop 1 vs) vs
+        vs2 = A.zipWith (-) (A.drop 1 vs) vs
+
+
+-- | Integrate Series
+integrate :: ∀ a. Field a => Series a -> Series a 
+integrate (Series idx vs) = Series idx v2
+    where
+        v2 = snd (A.foldl f (Tuple zero []) vs)
+        f (Tuple a os) x = Tuple (a+x) (A.snoc os (a+x))
