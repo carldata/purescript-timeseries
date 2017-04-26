@@ -9,13 +9,14 @@ module Data.TimeSeries
     , series
     , mkIndex
     -- Data operations
+    , diff
     , index 
-    , values
     , filter
     , length
     , rollingWindow
     , slice
     , toDataPoints
+    , values
     , zipWith
     ) where
 
@@ -153,3 +154,9 @@ rolling' mu agg xs = (A.foldl f {wnd: mu, out: []} xs).out
         where 
             wnd1 = A.snoc ws x
             wnd2 = A.drop 1 wnd1
+
+-- | Differentiate Series xt = xt - x(t-1)
+diff :: ∀ a. Field a => Series a -> Series a 
+diff (Series idx vs) = Series (A.drop 1 idx) vs2 
+    where
+      vs2 = A.zipWith (-) (A.drop 1 vs) vs

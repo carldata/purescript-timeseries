@@ -21,6 +21,7 @@ testSeries = do
     testZipWith
     testRolling
     testMap
+    testDiff
 
 
 lengthTest :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
@@ -86,3 +87,13 @@ testMap = do
     let xs = TS.fromValues [1.0, 2.0, 3.0, 4.0, 5.0]
     let ys = map ((*) 2.0) xs
     assert $ ys == TS.fromValues [2.0, 4.0, 6.0, 8.0, 10.0]
+
+
+testDiff :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
+testDiff = do
+    log "* Differentiate"
+    let xs = TS.fromValues [1.0, 2.0, 3.0, 4.0, 5.0]
+    let ys = TS.diff xs
+    assert $ ys == TS.series [1000.0, 2000.0, 3000.0, 4000.0] [1.0, 1.0, 1.0, 1.0]
+
+
