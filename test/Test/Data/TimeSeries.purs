@@ -20,6 +20,7 @@ testSeries = do
     testFilter
     testZipWith
     testRolling
+    testMap
 
 
 lengthTest :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
@@ -77,3 +78,11 @@ testRolling = do
     let xs = TS.fromValues [1.0, 2.0, 3.0, 4.0, 5.0]
     let ys = TS.rollingWindow 3 sum xs
     assert $ ys == TS.series [2000.0, 3000.0, 4000.0] [6.0, 9.0, 12.0]
+
+
+testMap :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
+testMap = do
+    log "* Map"
+    let xs = TS.fromValues [1.0, 2.0, 3.0, 4.0, 5.0]
+    let ys = map ((*) 2.0) xs
+    assert $ ys == TS.fromValues [2.0, 4.0, 6.0, 8.0, 10.0]

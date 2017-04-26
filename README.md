@@ -22,12 +22,12 @@ bower install purescript-timeseries
     * [x] Slicing series
     * [x] Filtering series
     * [x] Join 2 series
-    * [ ] Mapping over series
+    * [x] Mapping over series
     * [ ] Folding series
     * [ ] Integration
     * [ ] Differentiation
     * [x] Rolling window
-    * [ ] Resampling and groupBy
+    * [ ] GroupBy
   * Input/Output
     * [x] Reading data from CSV string
   * Advanced functionality

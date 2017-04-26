@@ -40,6 +40,9 @@ instance showSeries :: Show a => Show (Series a) where
 instance eqSeries :: Eq a => Eq (Series a) where 
     eq (Series idx1 vs1) (Series idx2 vs2) = (eq idx1 idx2) && (eq vs1 vs2)
 
+instance functorSeries :: Functor Series where 
+    map f (Series idx vs) = Series idx (map f vs)
+
 
 -- | Create data point
 dataPoint :: ∀ a. Timestamp -> a -> DataPoint a
