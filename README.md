@@ -26,7 +26,7 @@ bower install purescript-timeseries
     * [ ] Folding series
     * [ ] Integration
     * [ ] Differentiation
-    * [ ] Rolling window
+    * [x] Rolling window
     * [ ] Resampling and groupBy
   * Input/Output
     * [x] Reading data from CSV string

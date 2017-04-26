@@ -30,7 +30,7 @@ singleColumnTest = do
   log "Load single column from CSV"
   let csv1 = "ts,v\n2015-01-02T12:34:56,123.45\n2015-01-02T12:34:57,124\n2015-01-02T12:34:58,125\n"
   let s1 = fromMaybe TS.empty $ A.head $ IO.fromCsv csv1
-  assert $ s1.values == [123.45, 124.0, 125.0]
+  assert $ TS.values s1 == [123.45, 124.0, 125.0]
 
 
 multiColumnTest :: ∀ eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS  | eff) Unit
@@ -48,7 +48,7 @@ fromFileTest = do
   let s1 = fromMaybe TS.empty (A.index (IO.fromCsv csv) 0)
   assert $ TS.length s1 == 59042      
   -- Index should increase
-  let idx1 = s1.index
+  let idx1 = TS.index s1
   let idx2 = A.zip idx1 (fromMaybe [] (A.tail idx1))
   let idx3 = A.filter (\tu -> (fst tu) > (snd tu)) idx2
   assert $ A.length idx3 == 0

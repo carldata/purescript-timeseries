@@ -79,7 +79,7 @@ testFilter = do
     let xs = IO.fromCsv csv
     let s1 = fromMaybe TS.empty $ A.index xs 0
     let s2 = fromMaybe TS.empty $ A.index xs 1
-    let s3 = A.filter ((==) false) $ A.zipWith (==) s1.values s2.values             
+    let s3 = A.filter ((==) false) $ A.zipWith (==) (TS.values s1) (TS.values s2)
     t2 <- now
     log $ "Time " <> show (t2-t1) <> " milliseconds."
 
@@ -89,7 +89,7 @@ test1M = do
     log "* 1M points"
     let s1 = TS.fromValues $ A.replicate 1000000 2.72
     t1 <- now
-    let s3 = map (_ * 3.0) s1.values
+    let s3 = map (_ * 3.0) (TS.values s1)
     t2 <- now
     log $ "map " <> show (t2-t1) <> " milliseconds."
     assert $ t2-t1 < 1e3
@@ -100,7 +100,7 @@ test10M = do
     log "* 10M points"
     let s1 = TS.fromValues $ A.replicate 10000000 3.14
     t1 <- now
-    let s3 = map (_ * 3.0) s1.values
+    let s3 = map (_ * 3.0) (TS.values s1)
     t2 <- now
     log $ "map " <> show (t2-t1) <> " milliseconds."
     assert $ t2-t1 < 1e4

@@ -35,7 +35,7 @@ testValues = do
     log "* Return values" 
     let xs = [1.3, 2.6, 3.4, 4.6, 5.0]
     let s1 = TS.fromValues  xs
-    assert $ s1.values == xs
+    assert $ TS.values s1 == xs
 
 
 testSlicing :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
@@ -47,10 +47,10 @@ testSlicing = do
     let end4 = T.fromSeconds 4
 
     let slicing1 = TS.slice start2 end4 s1
-    assert $ slicing1.values == [3.4, 4.6]
+    assert $ TS.values slicing1 == [3.4, 4.6]
     log "* Slicing - empty series if wrong indexes"
     let slicing2 = TS.slice start20 end4 s1
-    assert $ slicing2.values == []
+    assert $ TS.values slicing2 == []
 
 
 testFilter :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
@@ -59,7 +59,8 @@ testFilter = do
     log "* Filtering"
     let s2 = TS.fromValues [4.0, 2.6, 3.4, 4.6, 1.5]
     let filtered1 = TS.filter (_ < 3.0) s2
-    assert $ filtered1.values == [2.6, 1.5]
+    assert $ TS.values filtered1 == [2.6, 1.5]
+
 
 testZipWith :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
 testZipWith = do
@@ -67,7 +68,7 @@ testZipWith = do
     let s1 = TS.fromValues [1.3, 2.6, 3.4, 4.6, 5.0]
     let s2 = TS.fromValues [4.0, 2.6, 3.4, 4.6, 1.5]
     let z1 = TS.zipWith (+) s1 s2
-    assert $ z1.values == [5.3, 5.2, 6.8, 9.2, 6.5]
+    assert $ TS.values z1 == [5.3, 5.2, 6.8, 9.2, 6.5]
 
 
 testRolling :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
@@ -75,5 +76,5 @@ testRolling = do
     log "* Rolling window"
     let xs = TS.fromValues [1.0, 2.0, 3.0, 4.0, 5.0]
     let ys = TS.rollingWindow 3 sum xs
-    assert $ ys.index == [2000.0, 3000.0, 4000.0]
-    assert $ ys.values == [6.0, 9.0, 12.0]
+    assert $ TS.index ys == [2000.0, 3000.0, 4000.0]
+    assert $ TS.values ys == [6.0, 9.0, 12.0]
