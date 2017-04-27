@@ -25,6 +25,7 @@ perfTests = do
     zipWith10K
     -- Skipped due to too long processing. ~3080ms. Doesn't scala lineary
     -- zipWith30K
+    testGroupBy
     testRolling
     testFilter
     test1M
@@ -69,6 +70,20 @@ testRolling = do
     t2 <- now
     log $ "Time: " <> show (t2-t1) <> " milliseconds."
     assert $ t2-t1 < 2e4
+
+
+testGroupBy :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
+testGroupBy = do
+    log "* Test groupBy window 60K, window size=3"
+    t1 <- now
+    csv <- readTextFile UTF8 "testdata/test60k.csv"
+    let xs = IO.fromCsv csv
+    let s1 = fromMaybe TS.empty $ A.index xs 0
+    let dt = 60.0 * 60.0 * 1e3 -- 1 hour
+    let s2 = TS.groupBy dt sum s1
+    t2 <- now
+    log $ "Time: " <> show (t2-t1) <> " milliseconds."
+    assert $ t2-t1 < 1e4
 
 
 testFilter :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit

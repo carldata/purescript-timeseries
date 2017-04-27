@@ -23,6 +23,7 @@ testSeries = do
     testMap
     testDiff
     testIntegrate
+    testGroupBy
 
 
 lengthTest :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
@@ -100,7 +101,12 @@ testDiff = do
 testIntegrate :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
 testIntegrate = do
     log "* Integrate"
-    let xs = TS.fromValues [1.0, 2.0, 3.0, 4.0, 5.0]
-    assert $ TS.integrate xs == TS.series [0.0, 1000.0, 2000.0, 3000.0, 4000.0] [1.0, 3.0, 6.0, 10.0, 15.0]
+    let xs = TS.fromValues [1, 2, 3, 4, 5]
+    assert $ TS.integrate xs == TS.series [0.0, 1000.0, 2000.0, 3000.0, 4000.0] [1, 3, 6, 10, 15]
 
 
+testGroupBy :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
+testGroupBy = do
+    log "* GroupBy"
+    let xs = TS.fromValues [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0]
+    assert $ TS.groupBy 2e3 sum xs == TS.series [0.0, 2000.0, 4000.0] [3.0, 7.0, 11.0]

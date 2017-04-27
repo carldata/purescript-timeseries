@@ -13,6 +13,7 @@ module Data.TimeSeries
     , index 
     , integrate
     , filter
+    , groupBy
     , length
     , rollingWindow
     , slice
@@ -24,7 +25,7 @@ module Data.TimeSeries
 import Prelude
 import Data.Array as A
 import Data.Int (toNumber)
-import Data.Maybe (fromMaybe, fromJust)
+import Data.Maybe (Maybe(..), fromMaybe, fromJust)
 import Data.TimeSeries.Time (Timestamp)
 import Data.Tuple (Tuple(..), fst, snd)
 import Partial.Unsafe (unsafePartial)
@@ -158,15 +159,37 @@ rolling' mu agg xs = (A.foldl f {wnd: mu, out: []} xs).out
 
 
 -- | Differentiate Series xt = xt - x(t-1)
-diff :: ∀ a. Field a => Series a -> Series a 
+diff :: ∀ a. Ring a => Series a -> Series a 
 diff (Series idx vs) = Series (A.drop 1 idx) vs2 
     where
         vs2 = A.zipWith (-) (A.drop 1 vs) vs
 
 
 -- | Integrate Series
-integrate :: ∀ a. Field a => Series a -> Series a 
+integrate :: ∀ a. Ring a => Series a -> Series a 
 integrate (Series idx vs) = Series idx v2
     where
         v2 = snd (A.foldl f (Tuple zero []) vs)
         f (Tuple a os) x = Tuple (a+x) (A.snoc os (a+x))
+
+
+-- | Group series datapoints. This will reduce series data points number by given n.
+groupBy :: ∀ a b. Number    -- ^ Window size in milliseconds
+        -> (Array a -> b)   -- ^ Function applied to group values
+        -> Series a         -- ^ Input series
+        -> Series b         -- ^ Grouped series
+groupBy dt f xs = fromDataPoints $ groupBy' dt f (toDataPoints xs)
+
+
+groupBy' :: ∀ a b. Number -> (Array a -> b) -> Array (DataPoint a) -> Array (DataPoint b)
+groupBy' dt f xs = snd $ A.foldl g (Tuple [] []) xs
+    where
+        g :: Tuple (Array (DataPoint a)) (Array (DataPoint b)) -> DataPoint a -> Tuple (Array (DataPoint a)) (Array (DataPoint b))
+        g (Tuple acc out) x = case A.uncons acc of
+            Just {head: y, tail} -> if x.index < y.index + dt 
+                                    then Tuple (A.snoc acc x) out
+                                    else Tuple [x] (A.snoc out (dataPoint y.index (f' acc)))
+            Nothing -> Tuple [x] out
+        f' :: Array (DataPoint a) -> b
+        f' ds = f $ map _.value ds
+

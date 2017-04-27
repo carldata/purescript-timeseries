@@ -26,7 +26,7 @@ bower install purescript-timeseries
     * [x] Integration
     * [x] Differentiation
     * [x] Rolling window
-    * [ ] GroupBy
+    * [x] GroupBy
   * Input/Output
     * [x] Reading data from CSV string
   * Advanced functionality
