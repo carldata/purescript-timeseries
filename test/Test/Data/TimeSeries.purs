@@ -3,6 +3,7 @@ module Test.Data.TimeSeries (testSeries) where
 import Prelude
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (log, CONSOLE)
+import Data.Maybe (Maybe(..))
 import Test.Assert (assert, ASSERT)
 
 import LinearAlgebra.Vector (sum)
@@ -17,6 +18,8 @@ testSeries = do
     lengthTest
     testValues
     testSlicing
+    testHead
+    testLast
     testFilter
     testZipWith
     testRolling
@@ -40,6 +43,20 @@ testValues = do
     let xs = [1.3, 2.6, 3.4, 4.6, 5.0]
     let s1 = TS.fromValues  xs
     assert $ TS.values s1 == xs
+
+
+testHead :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
+testHead = do
+    log "* Return first element" 
+    let s1 = TS.fromValues [1, 2, 3, 4, 5]
+    assert $ TS.head s1 == Just (TS.dataPoint 0.0 1)
+
+
+testLast :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
+testLast = do
+    log "* Return last element" 
+    let s1 = TS.fromValues [1.3, 2.6, 3.4, 4.6, 5.0]
+    assert $ TS.last s1 == Just (TS.dataPoint 4000.0 5.0)
 
 
 testSlicing :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit

@@ -8,6 +8,10 @@ module Data.TimeSeries
     , fromValues
     , series
     , mkIndex
+    -- Data access
+    , head 
+    , last
+    , slice
     -- Data operations
     , diff
     , index 
@@ -16,7 +20,6 @@ module Data.TimeSeries
     , groupBy
     , length
     , rollingWindow
-    , slice
     , toDataPoints
     , values
     , zipWith
@@ -32,10 +35,14 @@ import Partial.Unsafe (unsafePartial)
 
 
 -- | Data point is a time indexed value
-type DataPoint a = { index :: Timestamp, value :: a }
+data DataPoint a = DP Timestamp a
                  
 -- | Data structure for holding Series.
 data Series a = Series (Array Timestamp) (Array a)
+
+
+instance eqDataPoint :: Eq a => Eq (DataPoint a) where 
+    eq (DP idx1 vs1) (DP idx2 vs2) = (eq idx1 idx2) && (eq vs1 vs2)
 
 instance showSeries :: Show a => Show (Series a) where 
     show (Series idx vs) = "{ index: " <> show idx <> "\n, values: " <> show vs <> "\n}"
@@ -49,7 +56,15 @@ instance functorSeries :: Functor Series where
 
 -- | Create data point
 dataPoint :: ∀ a. Timestamp -> a -> DataPoint a
-dataPoint i v = { index: i, value: v }
+dataPoint i v = DP i v
+
+-- | Get DataPoint index
+dpIndex :: ∀ a. DataPoint a -> Timestamp
+dpIndex (DP i _) = i
+
+-- | Get DataPoint value
+dpValue :: ∀ a. DataPoint a -> a
+dpValue (DP _ v) = v
 
 
 -- | Get Series index
@@ -73,7 +88,7 @@ empty = series [] []
 
 -- | Create series from DateTime and value.
 fromDataPoints :: ∀ a. Array (DataPoint a) -> Series a
-fromDataPoints xs = series (map _.index xs) (map _.value xs)
+fromDataPoints xs = series (map dpIndex xs) (map dpValue xs)
 
 
 -- | Conver to array of data points
@@ -96,6 +111,22 @@ mkIndex n = map (\x -> 1000.0 * (toNumber x)) (A.range 0 (n-1))
 -- | Get series length.
 length :: ∀ a. Series a -> Int
 length (Series idx vs) = A.length idx
+
+
+-- | Get first element if exists
+head :: ∀ a. Series a -> Maybe (DataPoint a)
+head (Series idx vs) = do
+    i <- A.head idx 
+    v <- A.head vs 
+    pure $ dataPoint i v
+
+
+-- | Get last element if exists
+last :: ∀ a. Series a -> Maybe (DataPoint a)
+last (Series idx vs) = do
+    i <- A.last idx 
+    v <- A.last vs 
+    pure $ dataPoint i v
 
 
 -- | Get subseries
@@ -134,10 +165,10 @@ zipWith' f xs ys = snd $ A.foldl g (Tuple ys []) xs
     where
         g :: Tuple (Array (DataPoint b)) (Array (DataPoint c)) -> DataPoint a -> Tuple (Array (DataPoint b)) (Array (DataPoint c))
         g tu x = if A.null ys' then tu 
-                 else if y'.index > x.index then Tuple ys' (snd tu)
-                 else Tuple yt' (A.snoc (snd tu) (dataPoint x.index (f x.value y'.value)))
+                 else if (dpIndex y') > (dpIndex x) then Tuple ys' (snd tu)
+                 else Tuple yt' (A.snoc (snd tu) (dataPoint (dpIndex x) (f (dpValue x) (dpValue y'))))
             where 
-                ys' = A.dropWhile (\y -> y.index < x.index) (fst tu)
+                ys' = A.dropWhile (\y -> (dpIndex y) < (dpIndex x)) (fst tu)
                 y' = unsafePartial $ fromJust $ A.head ys'
                 yt' = unsafePartial $ fromJust $ A.tail ys'
 
@@ -186,10 +217,10 @@ groupBy' dt f xs = snd $ A.foldl g (Tuple [] []) xs
     where
         g :: Tuple (Array (DataPoint a)) (Array (DataPoint b)) -> DataPoint a -> Tuple (Array (DataPoint a)) (Array (DataPoint b))
         g (Tuple acc out) x = case A.uncons acc of
-            Just {head: y, tail} -> if x.index < y.index + dt 
+            Just {head: y, tail} -> if (dpIndex x) < (dpIndex y) + dt 
                                     then Tuple (A.snoc acc x) out
-                                    else Tuple [x] (A.snoc out (dataPoint y.index (f' acc)))
+                                    else Tuple [x] (A.snoc out (dataPoint (dpIndex y) (f' acc)))
             Nothing -> Tuple [x] out
         f' :: Array (DataPoint a) -> b
-        f' ds = f $ map _.value ds
+        f' ds = f $ map dpValue ds
 
