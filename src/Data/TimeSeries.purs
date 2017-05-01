@@ -9,20 +9,22 @@ module Data.TimeSeries
     , series
     , mkIndex
     -- Data access
+    , dpIndex 
+    , dpValue
     , head 
+    , index 
     , last
     , slice
     , resolution
+    , values
     -- Data operations
     , diff
-    , index 
     , integrate
     , filter
     , groupBy
     , length
     , rollingWindow
     , toDataPoints
-    , values
     , zipWith
     ) where
 
