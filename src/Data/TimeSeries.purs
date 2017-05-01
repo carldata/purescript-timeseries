@@ -44,6 +44,9 @@ data DataPoint a = DP Timestamp a
 data Series a = Series (Array Timestamp) (Array a)
 
 
+instance showDataPoint :: Show a => Show (DataPoint a) where 
+    show (DP idx v) = "{ index: " <> show idx <> ", value: " <> show v <> " }"
+
 instance eqDataPoint :: Eq a => Eq (DataPoint a) where 
     eq (DP idx1 vs1) (DP idx2 vs2) = (eq idx1 idx2) && (eq vs1 vs2)
 
