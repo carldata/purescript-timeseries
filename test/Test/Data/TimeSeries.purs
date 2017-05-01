@@ -22,6 +22,8 @@ testSeries = do
     testLast
     testResolution
     testFilter
+    testDrop
+    testTake
     testZipWith
     testRolling
     testMap
@@ -83,13 +85,26 @@ testSlicing = do
     assert $ TS.values slicing2 == []
 
 
-testFilter :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
+testFilter :: ∀ eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
 testFilter = do
-
     log "* Filtering"
     let s2 = TS.fromValues [4.0, 2.6, 3.4, 4.6, 1.5]
     let filtered1 = TS.filter (_ < 3.0) s2
     assert $ TS.values filtered1 == [2.6, 1.5]
+
+
+testDrop :: ∀ eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
+testDrop = do
+    log "* Drop n first elements"
+    let s1 = TS.fromValues [1, 2, 3, 4, 5]
+    assert $ TS.drop 3 s1 == TS.series [3000.0, 4000.0] [4, 5]
+
+
+testTake :: ∀ eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
+testTake = do
+    log "* Take n first elements"
+    let s1 = TS.fromValues [1, 2, 3, 4, 5]
+    assert $ TS.take 3 s1 == TS.fromValues [1, 2, 3]
 
 
 testZipWith :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit

@@ -11,6 +11,7 @@ module Data.TimeSeries
     -- Data access
     , dpIndex 
     , dpValue
+    , drop
     , head 
     , index 
     , last
@@ -24,6 +25,7 @@ module Data.TimeSeries
     , groupBy
     , length
     , rollingWindow
+    , take
     , toDataPoints
     , zipWith
     ) where
@@ -166,6 +168,16 @@ filter pred (Series idx vs) = series (fst tu) (snd tu)
         xs2 = A.filter (\t -> pred (snd t)) xs1
         -- Unzip
         tu = A.unzip xs2
+
+
+-- | Take n first elements of the series. Drop rest
+take :: ∀ a. Int -> Series a -> Series a
+take n (Series idx vs) = Series (A.take n idx) (A.take n vs)
+
+
+-- | Drop n first elements of the series. Keep rest
+drop :: ∀ a. Int -> Series a -> Series a
+drop n (Series idx vs) = Series (A.drop n idx) (A.drop n vs)
 
 
 -- | Join 2 series using given function
