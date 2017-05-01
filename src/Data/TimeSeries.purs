@@ -12,6 +12,7 @@ module Data.TimeSeries
     , head 
     , last
     , slice
+    , resolution
     -- Data operations
     , diff
     , index 
@@ -127,6 +128,15 @@ last (Series idx vs) = do
     i <- A.last idx 
     v <- A.last vs 
     pure $ dataPoint i v
+
+
+-- | Get distance between points in this series
+resolution :: ∀ a. Series a -> Number 
+resolution (Series idx _) = if n1 < 1 then 0.0 else (x2-x1) / toNumber n1
+    where 
+        x1 = fromMaybe 0.0 (A.head idx)
+        x2 = fromMaybe 0.0 (A.last idx)
+        n1 = (A.length idx) - 1
 
 
 -- | Get subseries

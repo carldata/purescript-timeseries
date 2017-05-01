@@ -20,6 +20,7 @@ testSeries = do
     testSlicing
     testHead
     testLast
+    testResolution
     testFilter
     testZipWith
     testRolling
@@ -57,6 +58,14 @@ testLast = do
     log "* Return last element" 
     let s1 = TS.fromValues [1.3, 2.6, 3.4, 4.6, 5.0]
     assert $ TS.last s1 == Just (TS.dataPoint 4000.0 5.0)
+
+
+testResolution :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
+testResolution = do
+    log "* Distance between points" 
+    let s1 = TS.fromValues [1, 2, 3, 4, 5]
+    log $ show $ TS.resolution s1
+    assert $ TS.resolution s1 == 1000.0
 
 
 testSlicing :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
