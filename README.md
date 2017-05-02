@@ -7,7 +7,8 @@
   </img>
 </a>
 
-Library for Time Series analysis.
+Library for Time Series analysis. Online demo application is available at:
+https://timeserieslab.github.io/
 
 
 ## Installation
@@ -29,6 +30,9 @@ bower install purescript-timeseries
     * [x] GroupBy
   * Input/Output
     * [x] Reading data from CSV string
+  * Filtering
+    * [ ] Fill missing values
+    * [ ] Remove outliers
   * Advanced functionality
     * [ ] Finding sessions (periods of activity)
     * [ ] Finding patterns

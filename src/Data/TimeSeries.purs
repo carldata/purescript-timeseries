@@ -7,7 +7,6 @@ module Data.TimeSeries
     , fromDataPoints
     , fromValues
     , series
-    , mkIndex
     -- Data access
     , dpIndex 
     , dpValue
@@ -42,7 +41,7 @@ import Partial.Unsafe (unsafePartial)
 -- | Data point is a time indexed value
 data DataPoint a = DP Timestamp a
                  
--- | Data structure for holding Series.
+-- | Data structure for holding Time Series.
 data Series a = Series (Array Timestamp) (Array a)
 
 
@@ -94,12 +93,12 @@ empty :: ∀ a. Series a
 empty = series [] []
 
 
--- | Create series from DateTime and value.
+-- | Create series from DataPoints.
 fromDataPoints :: ∀ a. Array (DataPoint a) -> Series a
 fromDataPoints xs = series (map dpIndex xs) (map dpValue xs)
 
 
--- | Conver to array of data points
+-- | Convert series to the array of data points
 toDataPoints :: ∀ a. Series a -> Array (DataPoint a)
 toDataPoints (Series idx vs) = (\t -> dataPoint (fst t) (snd t)) <$> A.zip idx vs
 
@@ -108,12 +107,9 @@ toDataPoints (Series idx vs) = (\t -> dataPoint (fst t) (snd t)) <$> A.zip idx v
 -- | Index will be based on Timestamp starting from 0
 fromValues :: ∀ a. Array a -> Series a
 fromValues xs = series (mkIndex (A.length xs)) xs
-    
-
--- | Create index starting from lowest date (bottom)
--- | In each step time is increased by 1 second
-mkIndex :: Int -> Array Timestamp
-mkIndex n = map (\x -> 1000.0 * (toNumber x)) (A.range 0 (n-1))
+    where 
+        mkIndex :: Int -> Array Timestamp
+        mkIndex n = map (\x -> 1000.0 * (toNumber x)) (A.range 0 (n-1))
 
 
 -- | Get series length.
@@ -146,7 +142,7 @@ resolution (Series idx _) = if n1 < 1 then 0.0 else (x2-x1) / toNumber n1
         n1 = (A.length idx) - 1
 
 
--- | Get subseries
+-- | Get subseries within given range. Lower and upper range is inclusive.
 slice :: ∀ a. Timestamp     -- ^ Start time (inclusive)
       -> Timestamp          -- ^ End time (inclusive)
       -> Series a           -- ^ Input series
@@ -180,8 +176,10 @@ drop :: ∀ a. Int -> Series a -> Series a
 drop n (Series idx vs) = Series (A.drop n idx) (A.drop n vs)
 
 
--- | Join 2 series using given function
--- | Series will be joinned on index. It means that both series need to have the same index entries
+-- | Join 2 series using given function.
+-- |
+-- | Series will be joinned on index. It means that both series need to have the same index entries.
+-- |
 -- | If only 1 series contains given index then this item will be dropped
 zipWith :: ∀ a b c. (a -> b -> c) -> Series a -> Series b -> Series c 
 zipWith f xs ys = fromDataPoints $ zipWith' f (toDataPoints xs) (toDataPoints ys)
@@ -200,7 +198,9 @@ zipWith' f xs ys = snd $ A.foldl g (Tuple ys []) xs
                 yt' = unsafePartial $ fromJust $ A.tail ys'
 
 
--- | Apply function to the rolling window and create new Series
+-- | Apply function to the rolling window and create new Series.
+-- |
+-- | Value is put at the last element of the window
 rollingWindow :: ∀ a b. Int -> (Array a -> b) -> Series a -> Series b 
 rollingWindow n agg (Series idx vs) = series idx2 $ rolling' (A.take n1 vs) agg (A.drop n1 vs)
     where 
@@ -223,7 +223,7 @@ diff (Series idx vs) = Series (A.drop 1 idx) vs2
         vs2 = A.zipWith (-) (A.drop 1 vs) vs
 
 
--- | Integrate Series
+-- | Integrate Series.
 integrate :: ∀ a. Ring a => Series a -> Series a 
 integrate (Series idx vs) = Series idx v2
     where
@@ -231,7 +231,9 @@ integrate (Series idx vs) = Series idx v2
         f (Tuple a os) x = Tuple (a+x) (A.snoc os (a+x))
 
 
--- | Group series datapoints. This will reduce series data points number by given n.
+-- | Group series points. 
+-- |
+-- | First Number defines window size in milliseconds
 groupBy :: ∀ a b. Number    -- ^ Window size in milliseconds
         -> (Array a -> b)   -- ^ Function applied to group values
         -> Series a         -- ^ Input series

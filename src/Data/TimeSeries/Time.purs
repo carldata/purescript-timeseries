@@ -5,9 +5,9 @@ import Prelude
 import Data.Int (toNumber)
 
 
--- Time stamp in milliseconds as defined by JS Date function
+-- | Time stamp in milliseconds as defined by JS Date function
 type Timestamp = Number
 
--- | Convert Timestamp in seconds into the DateTime
+-- | Convert given number of seconds into Timestamp value.
 fromSeconds :: Int -> Timestamp
 fromSeconds n = toNumber (1000 * n)
