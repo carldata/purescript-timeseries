@@ -24,6 +24,7 @@
     "purescript-math": "^2.0.0",
     "purescript-maybe": "^3.0.0",
     "purescript-prelude": "^3.0.0",
+    "purescript-stats": "^0.2.0",
     "purescript-tuples": "^4.0.0"
   },
   "devDependencies": {

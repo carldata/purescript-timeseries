@@ -36,6 +36,7 @@ import Data.Maybe (Maybe(..), fromMaybe, fromJust)
 import Data.TimeSeries.Time (Timestamp)
 import Data.Tuple (Tuple(..), fst, snd)
 import Partial.Unsafe (unsafePartial)
+import Statistics.Sample as S
 
 
 -- | Data point is a time indexed value
@@ -135,11 +136,9 @@ last (Series idx vs) = do
 
 -- | Get distance between points in this series
 resolution :: ∀ a. Series a -> Number 
-resolution (Series idx _) = if n1 < 1 then 0.0 else (x2-x1) / toNumber n1
+resolution (Series idx _) = fromMaybe 0.0 $ S.mode idx1
     where 
-        x1 = fromMaybe 0.0 (A.head idx)
-        x2 = fromMaybe 0.0 (A.last idx)
-        n1 = (A.length idx) - 1
+        idx1 = A.zipWith (\x1 x2 -> x2-x1) idx (fromMaybe [] (A.tail idx))
 
 
 -- | Get subseries within given range. Lower and upper range is inclusive.
