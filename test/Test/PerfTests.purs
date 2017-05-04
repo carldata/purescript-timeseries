@@ -22,18 +22,17 @@ perfTests :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception ::
 perfTests = do
 
     log "\n# Performance tests"   
-    zipWith10K
-    -- Skipped due to too long processing. ~3080ms. Doesn't scala lineary
-    -- zipWith30K
-    testGroupBy
+    testZipWith
+    testReindex
     testRolling
+    testGroupBy
     testFilter
     test1M
     test1M
     
 
-zipWith10K :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
-zipWith10K = do
+testZipWith :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
+testZipWith = do
     log "* zipWith 10K points"
     csv <- readTextFile UTF8 "testdata/test10k.csv"
     let xs = IO.fromCsv csv
@@ -45,18 +44,17 @@ zipWith10K = do
     log $ "Processed " <> show (TS.length s3) <> " points in " <> show (t2-t1) <> " milliseconds."
     assert $ t1-t2 < 5e3
 
-zipWith30K :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
-zipWith30K = do
-    log "* zipWith 30K points"
-    csv <- readTextFile UTF8 "testdata/test30k.csv"
+testReindex :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
+testReindex = do
+    log "* Test reindex 10K points"
+    t1 <- now
+    csv <- readTextFile UTF8 "testdata/test10k.csv"
     let xs = IO.fromCsv csv
     let s1 = fromMaybe TS.empty $ A.index xs 0
-    let s2 = fromMaybe TS.empty $ A.index xs 1
-    t1 <- now
-    let s3 = TS.zipWith (+) s1 s2
+    let s2 = TS.reindex 3e5 s1
     t2 <- now
-    log $ "Processed " <> show (TS.length s3) <> " points in " <> show (t2-t1) <> " milliseconds."
-    assert $ t1-t2 < 1e4
+    log $ "Time: " <> show (t2-t1) <> " milliseconds."
+    assert $ t2-t1 < 5e3
 
 
 testRolling :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit

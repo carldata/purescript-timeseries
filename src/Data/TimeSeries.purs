@@ -23,6 +23,7 @@ module Data.TimeSeries
     , filter
     , groupBy
     , length
+    , reindex
     , rollingWindow
     , take
     , toDataPoints
@@ -65,6 +66,11 @@ instance functorSeries :: Functor Series where
 -- | Create data point
 dataPoint :: ∀ a. Timestamp -> a -> DataPoint a
 dataPoint i v = DP i v
+
+-- Create zero data point
+dpZero :: DataPoint Number 
+dpZero = dataPoint 0.0 0.0
+
 
 -- | Get DataPoint index
 dpIndex :: ∀ a. DataPoint a -> Timestamp
@@ -243,7 +249,9 @@ groupBy dt f xs = fromDataPoints $ groupBy' dt f (toDataPoints xs)
 groupBy' :: ∀ a b. Number -> (Array a -> b) -> Array (DataPoint a) -> Array (DataPoint b)
 groupBy' dt f xs = snd $ A.foldl g (Tuple [] []) xs
     where
-        g :: Tuple (Array (DataPoint a)) (Array (DataPoint b)) -> DataPoint a -> Tuple (Array (DataPoint a)) (Array (DataPoint b))
+        g :: Tuple (Array (DataPoint a)) (Array (DataPoint b)) 
+          -> DataPoint a 
+          -> Tuple (Array (DataPoint a)) (Array (DataPoint b))
         g (Tuple acc out) x = case A.uncons acc of
             Just {head: y, tail} -> if (dpIndex x) < (dpIndex y) + dt 
                                     then Tuple (A.snoc acc x) out
@@ -251,4 +259,33 @@ groupBy' dt f xs = snd $ A.foldl g (Tuple [] []) xs
             Nothing -> Tuple [x] out
         f' :: Array (DataPoint a) -> b
         f' ds = f $ map dpValue ds
+
+
+-- | Reindex series. Ensure that series has point at each index value
+-- | So there are no missing values. 
+reindex :: Number -> Series Number -> Series Number
+reindex dt xs = fromDataPoints $ reindex' dt (toDataPoints xs) [dp]
+    where 
+        dp = fromMaybe dpZero $ head xs
+
+
+-- This function is implemented with ifs because PureScript doesn't support where
+-- clausule in guards
+reindex' :: Number                      -- ^ Time delta
+         -> Array (DataPoint Number)    -- ^ Imput array
+         -> Array (DataPoint Number)    -- ^ Partial output array. build so far
+         -> Array (DataPoint Number)    -- ^ Output
+reindex' dt [] out = out
+reindex' dt xs out = if nidx < dpIndex x then reindex' dt xs (A.snoc out (dataPoint nidx mu))
+                     else if nidx == dpIndex x then reindex' dt ts (A.snoc out x)
+                     else reindex' dt ts out
+    where
+        x = fromMaybe dpZero $ A.head xs
+        ts = fromMaybe [] $ A.tail xs
+        y = fromMaybe dpZero $ A.last out
+        nidx = dpIndex y + dt
+        mu = (ty/(tx+ty)) * dpValue x + ((tx/(tx+ty)) * dpValue y)
+        tx = (dpIndex x) - nidx
+        ty = nidx - (dpIndex y)
+
 

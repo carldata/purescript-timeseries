@@ -30,6 +30,7 @@ testSeries = do
     testDiff
     testIntegrate
     testGroupBy
+    testReindex
 
 
 lengthTest :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
@@ -151,3 +152,24 @@ testGroupBy = do
     log "* GroupBy"
     let xs = TS.fromValues [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0]
     assert $ TS.groupBy 2e3 sum xs == TS.series [0.0, 2000.0, 4000.0] [3.0, 7.0, 11.0]
+
+
+testReindex :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
+testReindex = do
+    log "* Reindex"
+    
+    log "Don't change series without missing values"
+    let xs1 = TS.series [1.0, 2.0, 3.0, 4.0] [1.0, 2.0, 3.0, 4.0]
+    assert $ TS.reindex 1.0 xs1 == TS.series [1.0, 2.0, 3.0, 4.0] [1.0, 2.0, 3.0, 4.0]
+    
+    log "missing values"
+    let xs2 = TS.series [1.0, 2.0, 3.0, 5.0] [1.0, 2.0, 3.0, 5.0]
+    assert $ TS.reindex 1.0 xs2 == TS.series [1.0, 2.0, 3.0, 4.0, 5.0] [1.0, 2.0, 3.0, 4.0, 5.0]
+
+    log "missing lots of values"
+    let xs3 = TS.series [1.0, 5.0] [1.0, 5.0]
+    assert $ TS.reindex 1.0 xs3 == TS.series [1.0, 2.0, 3.0, 4.0, 5.0] [1.0, 2.0, 3.0, 4.0, 5.0]
+
+    log "middle values"
+    let xs4 = TS.series [1.0, 4.0, 6.0] [1.0, 4.0, 6.0]
+    assert $ TS.reindex 2.0 xs4 == TS.series [1.0, 3.0, 5.0] [1.0, 3.0, 5.0]

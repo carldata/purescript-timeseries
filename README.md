@@ -31,7 +31,7 @@ bower install purescript-timeseries
   * Input/Output
     * [x] Reading data from CSV string
   * Filtering
-    * [ ] Fill missing values
+    * [x] Fill missing values (Reindex)
     * [ ] Remove outliers
   * Advanced functionality
     * [ ] Finding sessions (periods of activity)
