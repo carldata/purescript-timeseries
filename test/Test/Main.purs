@@ -12,6 +12,7 @@ import Test.Helpers(NOW)
 import Test.Data.TimeSeries (testSeries)
 import Test.Data.TimeSeries.IO (testIO)
 import Test.Data.TimeSeries.Time.Parser (testTimeParser)
+import Test.Data.TimeSeries.Anomalies (testAnomalies)
 import Test.PerfTests (perfTests)
 
 
@@ -20,4 +21,5 @@ main = do
   testTimeParser
   testSeries
   testIO
+  testAnomalies
   perfTests
