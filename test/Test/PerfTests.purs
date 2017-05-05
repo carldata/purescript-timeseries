@@ -16,6 +16,7 @@ import Test.Helpers(NOW, now)
 
 import Data.TimeSeries as TS
 import Data.TimeSeries.IO as IO
+import Data.TimeSeries.Analyze as TA
 
 
 perfTests :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
@@ -25,6 +26,7 @@ perfTests = do
     testZipWith
     testReindex
     testRolling
+    testMissing
     testGroupBy
     testFilter
     test1M
@@ -65,6 +67,19 @@ testRolling = do
     let xs = IO.fromCsv csv
     let s1 = fromMaybe TS.empty $ A.index xs 0
     let s2 = TS.rollingWindow 3 sum s1
+    t2 <- now
+    log $ "Time: " <> show (t2-t1) <> " milliseconds."
+    assert $ t2-t1 < 2e4
+
+
+testMissing :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW  | eff) Unit
+testMissing = do
+    log "* Test missing values"
+    t1 <- now
+    csv <- readTextFile UTF8 "testdata/test30k.csv"
+    let xs = IO.fromCsv csv
+    let s1 = fromMaybe TS.empty $ A.index xs 0
+    let s2 = TA.findMissing s1 3e5
     t2 <- now
     log $ "Time: " <> show (t2-t1) <> " milliseconds."
     assert $ t2-t1 < 2e4
