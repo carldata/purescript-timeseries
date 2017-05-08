@@ -1,5 +1,5 @@
 -- | Find and fix anomalies in Time Series
-module Data.TimeSeries.Anomalies (Model, train, removeOutliers) where
+module Data.TimeSeries.Anomaly (Model, train, removeOutliers) where
 
 import Prelude
 import Data.Array as A 

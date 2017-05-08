@@ -12,7 +12,7 @@ import Test.Helpers(NOW)
 import Test.Data.TimeSeries (testSeries)
 import Test.Data.TimeSeries.IO (testIO)
 import Test.Data.TimeSeries.Time.Parser (testTimeParser)
-import Test.Data.TimeSeries.Anomalies (testAnomalies)
+import Test.Data.TimeSeries.Anomaly (testAnomalies)
 import Test.Data.TimeSeries.Analyze (testAnalyze)
 import Test.PerfTests (perfTests)
 

@@ -1,4 +1,4 @@
-module Test.Data.TimeSeries.Anomalies (testAnomalies) where
+module Test.Data.TimeSeries.Anomaly (testAnomalies) where
 
 import Prelude
 import Control.Monad.Eff.Exception (EXCEPTION)
@@ -7,7 +7,7 @@ import Control.Monad.Eff.Console (log, CONSOLE)
 import Test.Assert (assert, ASSERT)
 
 import Data.TimeSeries as TS
-import Data.TimeSeries.Anomalies as TA
+import Data.TimeSeries.Anomaly as TA
 
 
 testAnomalies :: ∀ eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION  | eff) Unit
