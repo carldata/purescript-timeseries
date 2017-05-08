@@ -24,4 +24,4 @@ removeOutliersTest = do
   let xs2 = TS.fromValues [1.0, 0.8, 9.0, 1.2]
   let model = TA.train xs1
   let ys = TA.removeOutliers model xs2
-  assert $ TS.values ys == [1.0, 0.8, 0.8, 1.2]
+  assert $ TS.values ys == [1.0, 0.8, 1.04, 1.2]
