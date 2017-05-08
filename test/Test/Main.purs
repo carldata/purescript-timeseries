@@ -11,7 +11,7 @@ import Test.Helpers(NOW)
 
 import Test.Data.TimeSeries (testSeries)
 import Test.Data.TimeSeries.IO (testIO)
-import Test.Data.TimeSeries.Time.Parser (testTimeParser)
+import Test.Data.TimeSeries.Time.Convert (testTimeConverter)
 import Test.Data.TimeSeries.Anomaly (testAnomalies)
 import Test.Data.TimeSeries.Analyze (testAnalyze)
 import Test.PerfTests (perfTests)
@@ -19,7 +19,7 @@ import Test.PerfTests (perfTests)
 
 main :: ∀ eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS, now :: NOW | eff) Unit
 main = do
-  testTimeParser
+  testTimeConverter
   testSeries
   testIO
   testAnomalies

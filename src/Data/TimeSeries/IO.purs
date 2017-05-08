@@ -1,4 +1,4 @@
-module Data.TimeSeries.IO (fromCsv) where
+module Data.TimeSeries.IO (fromCsv, toCsv) where
   
 import Prelude
 import Data.Array as A
@@ -7,7 +7,7 @@ import Data.String as S
 import Data.Tuple (Tuple(..), fst, snd)
 import Global (readFloat)
 
-import Data.TimeSeries.Time.Parser (parseISOTime)
+import Data.TimeSeries.Time.Convert (parseISOTime, formatTime)
 import Data.TimeSeries.Time (Timestamp)
 import Data.TimeSeries as TS
 
@@ -48,3 +48,10 @@ toColumns rows = map col (A.range 0 (len-1))
     where 
         len = fromMaybe 0 $ A.length <$> A.head rows
         col i = A.mapMaybe (\row -> A.index row i) rows
+
+
+-- | Convert Series to the CSV format
+toCsv :: ∀ a. Show a => TS.Series a -> String
+toCsv xs = A.foldl f "time,value\n" $ TS.toDataPoints xs 
+    where 
+        f acc x = acc <> formatTime (TS.dpIndex x) <> "," <> show (TS.dpValue x) <> "\n"

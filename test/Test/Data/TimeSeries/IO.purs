@@ -23,6 +23,7 @@ testIO = do
   singleColumnTest
   multiColumnTest
   fromFileTest
+  toCsvTest
 
     
 singleColumnTest :: ∀ eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS  | eff) Unit
@@ -52,3 +53,11 @@ fromFileTest = do
   let idx2 = A.zip idx1 (fromMaybe [] (A.tail idx1))
   let idx3 = A.filter (\tu -> (fst tu) > (snd tu)) idx2
   assert $ A.length idx3 == 0
+
+
+toCsvTest :: ∀ eff. Eff (console :: CONSOLE, assert :: ASSERT, exception :: EXCEPTION, fs :: FS  | eff) Unit
+toCsvTest = do
+  log "Save to CSV"
+  let csv1 = "time,value\n2015-01-02T12:34:56.000Z,123.45\n2015-01-02T12:34:57.000Z,124.0\n2015-01-02T12:34:58.000Z,125.0\n"
+  let s1 = fromMaybe TS.empty $ A.head $ IO.fromCsv csv1
+  assert $ IO.toCsv s1 == csv1
