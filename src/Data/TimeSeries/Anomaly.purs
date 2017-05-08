@@ -13,6 +13,10 @@ import Data.TimeSeries as TS
 
 data Model = Model OD.Model
 
+instance showModel :: Show Model where
+  show (Model ds)= show ds
+
+
 -- | Train Anomaly detection model
 train :: TS.Series Number -> Model
 train xs = Model $ OD.train ys
