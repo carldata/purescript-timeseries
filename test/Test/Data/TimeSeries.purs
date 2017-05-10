@@ -8,7 +8,7 @@ import Test.Assert (assert, ASSERT)
 
 import LinearAlgebra.Vector (sum)
 import Data.TimeSeries as TS
-import Data.TimeSeries.Time as T
+import Data.TimeSeries.Time (seconds)
 
 
 testSeries :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
@@ -67,7 +67,6 @@ testResolution :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) U
 testResolution = do
     log "* Distance between points" 
     let s1 = TS.fromValues [1, 2, 3, 4, 5]
-    log $ show $ TS.resolution s1
     assert $ TS.resolution s1 == 1000.0
 
 
@@ -75,9 +74,9 @@ testSlicing :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
 testSlicing = do
     log "* Slicing"
     let s1 = TS.fromValues [1.3, 2.6, 3.4, 4.6, 5.0]
-    let start2 = T.fromSeconds 2
-    let start20 = T.fromSeconds 20
-    let end4 = T.fromSeconds 4
+    let start2 = seconds 2
+    let start20 = seconds 20
+    let end4 = seconds 4
 
     let slicing1 = TS.slice start2 end4 s1
     assert $ TS.values slicing1 == [3.4, 4.6]
