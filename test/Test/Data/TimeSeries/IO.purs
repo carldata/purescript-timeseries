@@ -47,7 +47,7 @@ fromFileTest = do
   log "Test load 60K from file"
   csv <- readTextFile UTF8 "testdata/test60k.csv"
   let s1 = fromMaybe TS.empty (A.index (IO.fromCsv csv) 0)
-  assert $ TS.length s1 == 59042      
+  assert $ TS.length s1 == 59041
   -- Index should increase
   let idx1 = TS.index s1
   let idx2 = A.zip idx1 (fromMaybe [] (A.tail idx1))
