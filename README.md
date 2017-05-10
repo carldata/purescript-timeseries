@@ -34,7 +34,7 @@ bower install purescript-timeseries
     * [x] Fill missing values (Reindex)
     * [x] Remove outliers
   * Advanced functionality
-    * [ ] Finding sessions (periods of activity)
+    * [x] Finding sessions (periods of activity)
     * [ ] Finding patterns
 
 
