@@ -1,5 +1,7 @@
 module Data.TimeSeries.Prediction.Exponential where 
 
+import Data.TimeSeries as TS 
+
 
 -- | Model for Exponential Smoothing.
 -- | This model keeps alpha coefficient and last value
@@ -10,7 +12,7 @@ data Model = Model Number Number  -- ^ alpha and cummulative value
 
 
 -- | Simple Exponential Smoothing
-ses :: Number -> Series Number -> Model 
+ses :: Number -> TS.Series Number -> Model 
 ses a xs = Model a 0.0 
 
 
