@@ -15,6 +15,7 @@ import Test.Data.TimeSeries.Time.Convert (testTimeConverter)
 import Test.Data.TimeSeries.Anomaly (testAnomalies)
 import Test.Data.TimeSeries.Analyze (testAnalyze)
 import Test.Data.TimeSeries.Session (testSessions)
+import Test.Data.TimeSeries.Model.Exponential (testExponential)
 import Test.PerfTests (perfTests)
 
 
@@ -26,4 +27,5 @@ main = do
   testAnomalies
   testAnalyze
   testSessions
+  testExponential
   perfTests

@@ -35,10 +35,9 @@ bower install purescript-timeseries
     * [x] Remove outliers
   * Advanced functionality
     * [x] Finding sessions (periods of activity)
-    * [ ] Finding patterns
     * [ ] FFT
   * Models
-    * [ ] Exponential smoothing
+    * [x] Exponential smoothing
 
 
 ## Documentation
