@@ -19,8 +19,12 @@ type Timestamp = Number
 
 
 foreign import parseISOTimeImpl :: String -> Number
+
 -- | Convert Timestamp into date representation
 foreign import formatTime :: Number -> String
+
+-- | Get day of week. Week starts at Sunday with 0 index
+foreign import dayOfWeek :: Number -> Int
 
 
 -- | Parse string representation of date time into the Timestamp.

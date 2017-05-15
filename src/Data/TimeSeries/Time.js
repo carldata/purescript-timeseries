@@ -9,3 +9,8 @@ exports.formatTime = function (t) {
   var d = new Date(t);
   return d.toISOString();
 };
+
+exports.dayOfWeek = function(t) {
+  var d = new Date(t);
+  return d.getDay();
+};
