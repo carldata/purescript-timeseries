@@ -1,16 +1,16 @@
-module Test.Data.TimeSeries.Time.Convert (testTimeConverter) where
+module Test.Data.TimeSeries.Time (testTime) where
 
 import Prelude
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (log, CONSOLE)
 import Data.Maybe (Maybe(..))
-import Data.TimeSeries.Time.Convert (parseISOTime)
+import Data.TimeSeries.Time (parseISOTime)
 import Test.Assert (assert, ASSERT)
 
 
 
-testTimeConverter :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
-testTimeConverter = do
+testTime :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
+testTime = do
 
     log "\n# Time parser tests"
 

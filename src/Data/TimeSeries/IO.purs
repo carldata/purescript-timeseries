@@ -7,8 +7,7 @@ import Data.String as S
 import Data.Tuple (Tuple(..), fst, snd)
 import Global (readFloat)
 
-import Data.TimeSeries.Time.Convert (parseISOTime, formatTime)
-import Data.TimeSeries.Time (Timestamp)
+import Data.TimeSeries.Time (Timestamp, parseISOTime, formatTime)
 import Data.TimeSeries as TS
 
 
