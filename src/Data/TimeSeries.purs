@@ -19,6 +19,7 @@ module Data.TimeSeries
     , values
     -- Data operations
     , diff
+    , ensureInc
     , integrate
     , filter
     , groupBy
@@ -92,13 +93,22 @@ values (Series _ vs) = vs
 
 --  | Create series from indexes and values
 series :: ∀ a. Array Timestamp -> Array a -> Series a 
-series is vs = Series is vs
+series is vs = Series (fst tp) (snd tp)
+    where
+        tp = ensureInc is vs
 
 
 -- | Create an empty series
 empty :: ∀ a. Series a
 empty = series [] []
 
+-- | Ensure that index is monotonically increasing
+ensureInc :: ∀ a. Array Timestamp -> Array a -> Tuple (Array Timestamp) (Array a)
+ensureInc is vs = Tuple (A.slice 0 n is) (A.slice 0 n vs)
+    where
+        n = A.length $ A.takeWhile f $ g is        
+        f x = fst x >= snd x            
+        g axs = A.zip axs (A.cons 0.0 axs)  
 
 -- | Create series from DataPoints.
 fromDataPoints :: ∀ a. Array (DataPoint a) -> Series a

@@ -22,7 +22,7 @@ fromCsv :: String -> Array (TS.Series Number)
 fromCsv str = map (\c -> TS.series idx c) cs
     where
         lines = S.split (S.Pattern "\n") str
-        parsedLines = keepMonotonous(parseLines lines)
+        parsedLines = parseLines lines
         -- The following lines could be written as 
         -- Tuple idx cs
         idx = fst parsedLines
@@ -55,15 +55,3 @@ toCsv xs = A.foldl f "time,value\n" $ TS.toDataPoints xs
     where 
         f acc x = acc <> formatTime (TS.dpIndex x) <> "," <> show (TS.dpValue x) <> "\n"
 
-
--- Ensure that index is monotonically increasing
-keepMonotonous :: Tuple (Column Timestamp) (Array (Column Number)) -> Tuple (Column Timestamp) (Array (Column Number))
-keepMonotonous tuple = tp
-    where
-        idx = fst tuple
-        n = A.length idx        
-        diff = A.zipWith (-) idx (A.cons 0.0 idx)
-        i = fromMaybe n $ A.findIndex (\x -> x <= 0.0) diff
-        tp = if i < (n - 1)
-                then Tuple (A.take (i + 1) idx)(A.take (i + 1) (snd tuple)) 
-                else Tuple (idx)((snd tuple))                  

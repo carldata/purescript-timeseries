@@ -21,6 +21,7 @@ testSeries = do
     testHead
     testLast
     testResolution
+    testEnsureInc
     testFilter
     testDrop
     testTake
@@ -84,11 +85,16 @@ testSlicing = do
     let slicing2 = TS.slice start20 end4 s1
     assert $ TS.values slicing2 == []
 
+testEnsureInc :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
+testEnsureInc = do 
+    log "* Return mono" 
+    let xs = TS.series [1.0, 2.0, 3.0, 1.0, 5.0] [1.0, 2.0, 3.0, 2.0, 5.0]    
+    assert $ TS.series [1.0, 2.0, 3.0] [1.0, 2.0, 3.0] == xs
 
 testFilter :: ∀ eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
 testFilter = do
     log "* Filtering"
-    let s2 = TS.fromValues [4.0, 2.6, 3.4, 4.6, 1.5]
+    let s2 = TS.fromValues [4.0, 2.6, 3.4, 4.6, 1.5]    
     let filtered1 = TS.filter (_ < 3.0) s2
     assert $ TS.values filtered1 == [2.6, 1.5]
 
