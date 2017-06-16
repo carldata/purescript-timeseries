@@ -54,3 +54,4 @@ toCsv :: ∀ a. Show a => TS.Series a -> String
 toCsv xs = A.foldl f "time,value\n" $ TS.toDataPoints xs 
     where 
         f acc x = acc <> formatTime (TS.dpIndex x) <> "," <> show (TS.dpValue x) <> "\n"
+
