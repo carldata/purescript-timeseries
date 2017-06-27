@@ -159,14 +159,14 @@ resolution (Series idx _) = fromMaybe 0.0 $ S.mode idx1
 
 -- | Get subseries within given range. Lower and upper range is inclusive.
 slice :: ∀ a. Timestamp     -- ^ Start time (inclusive)
-      -> Timestamp          -- ^ End time (inclusive)
+      -> Timestamp          -- ^ End time (exclusive)
       -> Series a           -- ^ Input series
       -> Series a           -- ^ Sliced Series
 slice start end (Series idx vs) = series (A.slice i j idx) (A.slice i j vs)
     where 
         n = A.length idx
         i = fromMaybe n $ A.findIndex (\x -> x >= start) idx
-        j = fromMaybe n $ A.findLastIndex (\x -> x <= end) idx
+        j = fromMaybe n (A.findLastIndex (\x -> x <= end) idx) + 1
 
 
 -- | Filter a series, keeping the elements which satisfy a predicate function, creating a new series.

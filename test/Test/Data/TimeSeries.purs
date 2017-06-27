@@ -80,7 +80,7 @@ testSlicing = do
     let end4 = seconds 4
 
     let slicing1 = TS.slice start2 end4 s1
-    assert $ TS.values slicing1 == [3.4, 4.6]
+    assert $ TS.values slicing1 == [3.4, 4.6, 5.0]
     log "* Slicing - empty series if wrong indexes"
     let slicing2 = TS.slice start20 end4 s1
     assert $ TS.values slicing2 == []
